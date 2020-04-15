@@ -14,7 +14,11 @@
 
 2、确定一个有范围的整数；
 
-3、当需要查找的某个数值满足某个特点的性质。
+3、需要查找的目标元素满足某个特定的性质。
+
+## 学习建议
+
+这里写成模板只是为了方便大家学习，但是学习算法更重要的是掌握思想，这需要通过大量的练习。希望大家能够在练习的过程中，不断体会二分查找法的「减治思想」。熟悉以后，这些模板都无需且不应该记忆，编码应该是十分自然的事情。
 
 ## 二分查找的三个模板
 
@@ -199,7 +203,7 @@ public int search(int[] nums, int left, int right, int target) {
 
 如果使用模板二，由于退出循环以后一定有 `left == right`，就只需要单独判断 `left` 是否满足题意。
 
-「力扣」第 35 题：[搜索插入位置](https://leetcode-cn.com/problems/search-insert-position/)。
+例题 2：「力扣」第 35 题：[搜索插入位置](https://leetcode-cn.com/problems/search-insert-position/)。
 
 > 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
 
@@ -256,7 +260,7 @@ public class Solution {
         
         while (left < right) {
             int mid = (left + right) >>> 1;
-            // 小于 target 的元素一定不是解
+            // 严格小于 target 的元素一定不是解
             if (nums[mid] < target) {
                 // 下一轮搜索的区间是 [mid + 1, right]
                 left = mid + 1;
@@ -274,5 +278,53 @@ public class Solution {
 + 空间复杂度：$O(1)$。
 
 
+### 题型 2：确定一个有范围的整数
+
+例题 3：「力扣」第 69 题：[x 的平方根](https://leetcode-cn.com/problems/sqrtx/)
+
+### 题型 3：需要查找的目标元素满足某个特定的性质
+
+说明：这一类问题判别条件不是一个表达式，很多时候需要抽取成一个函数。
+
+例题 4：「力扣」第 875 题：[爱吃香蕉的珂珂](https://leetcode-cn.com/problems/koko-eating-bananas/)
+
+
+
 ## 精选练习
 
+### 题型 1：在半有序（旋转有序或者是山脉）数组里查找元素；
+
+做这部分问题，需要摒弃一个观点：「二分查找」不是只能应用在有序数组里，只要是可以使用「减治思想」的问题，都可以使用二分查找。
+
+| 题目                                                         | 提示 |
+| ------------------------------------------------------------ | ---- |
+| [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/) |      |
+| [33. 搜索旋转排序数组](https://leetcode-cn.com/problems/search-in-rotated-sorted-array/) |      |
+| [81. 搜索旋转排序数组 II](https://leetcode-cn.com/problems/search-in-rotated-sorted-array-ii/) |      |
+| [153. 寻找旋转排序数组中的最小值](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/) |      |
+| [154. 寻找旋转排序数组中的最小值 II](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array-ii/) |      |
+| [300. 最长上升子序列](https://leetcode-cn.com/problems/longest-increasing-subsequence/) |      |
+| [275. H指数 II](https://leetcode-cn.com/problems/h-index-ii/) |      |
+| [1095. 山脉数组中查找目标值](https://leetcode-cn.com/problems/find-in-mountain-array/) |      |
+
+### 题型 2：确定一个有范围的整数
+
+
+| 题目                                                         | 提示 |
+| ------------------------------------------------------------ | ---- |
+| [69. 平方根](https://leetcode-cn.com/problems/sqrtx/)        |      |
+| [287. 寻找重复数](https://leetcode-cn.com/problems/find-the-duplicate-number/) |      |
+| [374. 猜数字大小](https://leetcode-cn.com/problems/guess-number-higher-or-lower/) |      |
+
+### 题型 3：需要查找的目标元素满足某个特定的性质
+
+| 题目                                                         | 提示 |
+| ------------------------------------------------------------ | ---- |
+| [4. 寻找两个有序数组的中位数](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/) |      |
+| [278. 第一个错误的版本](https://leetcode-cn.com/problems/first-bad-version/) |      |
+| [410. 分割数组的最大值](https://leetcode-cn.com/problems/split-array-largest-sum/) |      |
+| [658. 找到 K 个最接近的元素](https://leetcode-cn.com/problems/find-k-closest-elements/) |      |
+| [875. 爱吃香蕉的珂珂](https://leetcode-cn.com/problems/koko-eating-bananas/) |      |
+| [1300. 转变数组后最接近目标值的数组和](https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target/) |      |
+
+（本文完）
