@@ -24,11 +24,13 @@
 + 模板二：强烈推荐掌握的版本，应先理解思想，再通过实际应用去体会这个模板的细节，熟练使用以后就会觉得非常自然；
 + 模板三：可以认为是模板二的避免踩坑版本，只要深刻理解了模板二，模板三就不在话下。
 
-实际应用中，选择最好理解的版本即可，这里有一个提示：模板二考虑的细节最少，可以用于解决一些相对复杂的问题。缺点是：学习成本很大，建议大家通过多练习掌握。
+实际应用中，选择最好理解的版本即可。
+
+这里有一个提示：模板二考虑的细节最少，可以用于解决一些相对复杂的问题。缺点是：学习成本较高，初学的时候比较容易陷入死循环，建议大家通过多多使用，并且尝试 debug，找到死循环的原因，进而掌握。
 
 ### 二分查找模板一
 
-「力扣」第 704 题：[二分查找](https://leetcode-cn.com/problems/binary-search/)。
+例题 1：「力扣」第 704 题：[二分查找](https://leetcode-cn.com/problems/binary-search/)。
 
 > 给定一个 `n` 个元素有序的（升序）整型数组 `nums` 和一个目标值 `target`，写一个函数搜索 `nums` 中的 `target`，如果目标值存在返回下标，否则返回 `-1`。
 
@@ -135,7 +137,7 @@ public int search(int[] nums, int left, int right, int target) {
 
 理解模板代码的要点：
 
-+ 核心思想：虽然模板是两个，但是核心思想只有一个，那就是：把待搜索的目标元素放在最后判断，每一次循环排除掉不存在目标元素的区间，目的依然是确定下一轮搜索的区间；
++ 核心思想：虽然模板有两个，但是核心思想只有一个，那就是：把待搜索的目标元素放在最后判断，每一次循环排除掉不存在目标元素的区间，目的依然是确定下一轮搜索的区间；
 + 特征：`while (left < right)`，这里使用严格小于 `<` 表示的临界条件是：当区间里的元素只有 2 个时，依然可以执行循环体。换句话说，退出循环的时候一定有 `left == right` 成立，**这一点在定位元素下标的时候极其有用**；
 + 在循环体中，先考虑 `nums[mid]` 在满足什么条件下不是目标元素，进而考虑两个区间 `[left, mid - 1]` 以及 `[mid + 1, right]` 里元素的性质，目的依然是确定下一轮搜索的区间；
 **注意 1**：先考虑什么时候不是解，是一个经验，在绝大多数情况下不易出错，重点还是确定下一轮搜索的区间，由于这一步不容易出错，它的反面（也就是 `else` 语句的部分），就不用去考虑对应的区间是什么，直接从上一个分支的反面区间得到，进而确定边界如何设置；
@@ -155,7 +157,7 @@ public int search(int[] nums, int left, int right, int target) {
 ### 二分查找模板三（和模板二很像，但考虑细节更多）
 
 说明：
-+ 如果已经掌握了，就无需掌握这个模板，可以简单看一下这个模板，对比模板二；
++ 如果已经掌握了模板二，就无需掌握这个模板，可以简单看一下这个模板，对比模板二；
 + 这一版代码和模板二没有本质区别，一个显著的标志是：循环可以继续的条件是 `while (left + 1 < right)`，这说明在退出循环的时候，一定有 `left + 1 == right` 成立，也就是退出循环以后，区间有 2 个元素，即 `[left, right]`；
 + 这种写法的优点是：不用理解上一个版本在分支出现 `left = mid` 的时候中间数上取整的行为；
 + 缺点是显而易见的：
@@ -185,3 +187,92 @@ public int search(int[] nums, int left, int right, int target) {
     return -1;
 }
 ```
+
+## 精选例题
+
+### 题型 1：在有序数组里查找 lower_bound 和 upper_bound
+
++ lower_bound：查找第一个大于或等于 target 的数字；
++ upper_bound：查找第一个大于 target 的数字。
+
+这一类问题的描述经常让人觉得头晕，使用模板一，就需要考虑返回 `left` 还是 `right`。
+
+如果使用模板二，由于退出循环以后一定有 `left == right`，就只需要单独判断 `left` 是否满足题意。
+
+「力扣」第 35 题：[搜索插入位置](https://leetcode-cn.com/problems/search-insert-position/)。
+
+> 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+
+
+分析：
+
++ 根据题意，要我们找的是第 1 个大于或者等于 `target` 的元素的下标，因此小于 `target` 的元素一定不是解。根据这一点，使用模板二完成编码；
++ 由于插入元素的位置一定存在，这里无需后处理，但前面搜索范围的区间需要做特殊判断。
+
+请读者比较下面两版代码的区别：
+
+```java
+public class Solution {
+
+    public int searchInsert(int[] nums, int target) {
+        int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
+
+        // 特判
+        if (nums[len - 1] < target) {
+            return len;
+        }
+        int left = 0;
+        int right = len - 1;
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            // 严格小于 target 的元素一定不是解
+            if (nums[mid] < target) {
+                // 下一轮搜索区间是 [mid + 1, right]
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+}
+```
+
+```java
+public class Solution {
+
+    public int searchInsert(int[] nums, int target) {
+        int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
+        
+        int left = 0;
+        // 因为有可能数组的最后一个元素的位置的下一个是我们要找的，故右边界是 len
+        int right = len;
+        
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            // 小于 target 的元素一定不是解
+            if (nums[mid] < target) {
+                // 下一轮搜索的区间是 [mid + 1, right]
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+}
+```
+**复杂度分析**：
+
++ 时间复杂度：$O(\log N)$，这里 $N$ 是数组的长度，每一次都将问题的规模缩减为原来的一半，因此时间复杂度是对数级别的；
++ 空间复杂度：$O(1)$。
+
+
+## 精选练习
+
