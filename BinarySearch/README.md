@@ -16,6 +16,7 @@
 
 3、当需要查找的某个数值满足某个特点的性质。
 
+## 二分查找的三个模板
 
 说明：这里提供了三个模板，它们的关系是这样的：
 
@@ -25,7 +26,7 @@
 
 实际应用中，选择最好理解的版本即可，这里有一个提示：模板二考虑的细节最少，可以用于解决一些相对复杂的问题。缺点是：学习成本很大，建议大家通过多练习掌握。
 
-## 二分查找模板一
+### 二分查找模板一
 
 「力扣」第 704 题：[二分查找](https://leetcode-cn.com/problems/binary-search/)。
 
@@ -93,7 +94,7 @@ class Solution {
 + 循环可以继续的条件是 `while (left <= right)`，特别地，当 `left == right` 即当待搜索区间里只有一个元素的时候，查找也必须进行下去；
 + `int mid = (left + right) / 2;` 在 `left + right` 整形溢出的时候，`mid` 会变成负数，回避这个问题的办法是写成 `int mid = left + (right - left) / 2;`。
 
-## 二分查找模板二（强烈推荐）
+### 二分查找模板二（强烈推荐）
 
 这个版本的模板推荐使用的原因是：需要考虑的细节最少，编码时不容易出错。
 
@@ -151,7 +152,7 @@ public int search(int[] nums, int left, int right, int target) {
 + 先写分支，再决定中间数是否上取整；
 + 在使用多了以后，就很容易记住，只要看到 `left = mid` ，它对应的取中位数的取法一定是 `int mid = left + (right - left + 1) / 2;`。
 
-## 二分查找模板三（和模板二很像，但考虑细节更多）
+### 二分查找模板三（和模板二很像，但考虑细节更多）
 
 说明：
 + 如果已经掌握了，就无需掌握这个模板，可以简单看一下这个模板，对比模板二；
@@ -160,8 +161,6 @@ public int search(int[] nums, int left, int right, int target) {
 + 缺点是显而易见的：
   + `while (left + 1 < right)` 写法相对于 `while (left < right)` 和 `while (left <= right)` 来说并不自然；
   + 由于退出循环以后，区间一定有两个元素，需要思考哪一个元素才是需要找的，即「后处理」一定要做，有些时候还会有先考虑 `left` 还是 `right` 的区别。
-
-
 
 ```java
 public int search(int[] nums, int left, int right, int target) {
