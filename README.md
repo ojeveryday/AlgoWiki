@@ -77,7 +77,7 @@ C++ 语言：https://google.github.io/styleguide/cppguide.html
 | LinkedList         |          |          |
 | Stack              |          |          |
 | TwoPointers        |          |          |
-| BinarySearch       |          |          |
+| BinarySearch       | liweiwei1419 |  80% |
 | Divide&Conquer     |          |          |
 | HashTable          |          |          |
 | Math               |          |          |
