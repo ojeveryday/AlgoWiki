@@ -76,7 +76,7 @@ C++ 语言：https://google.github.io/styleguide/cppguide.html
 | Graph              |          |          |
 | LinkedList         |          |          |
 | Stack              |          |          |
-| TwoPointers        |          |          |
+| TwoPointers        | Duke     |          |
 | BinarySearch       |          |          |
 | Divide&Conquer     |          |          |
 | HashTable          |          |          |
