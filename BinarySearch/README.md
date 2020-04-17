@@ -657,7 +657,7 @@ public class Solution {
         int right = x / 2;
         while (left < right) {
             int mid = left + (right - left + 1) / 2;
-			// 不使用 mid * mid > x，防止 overflow
+            // 不使用 mid * mid > x，防止 overflow
             if (mid > x / mid) {
                 // 下一轮搜索的区间是 [left, mid - 1]
                 right = mid - 1;
