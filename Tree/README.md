@@ -64,7 +64,7 @@ LeetCode 中大部分的树都是有根结点的，所以这里仅讨论有根�
 
 #### 树的前序遍历
 
-前序遍历的顺序，先访问根结点，再遍历左子树，最后遍历右子树。[题目链接](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+前序遍历的顺序，先访问根结点，再遍历左子树，最后遍历右子树。[LeetCode 144](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
 
 遍历的结果就是返回一个，根据访问的先后排好序的序列。
 
@@ -76,9 +76,9 @@ LeetCode 中大部分的树都是有根结点的，所以这里仅讨论有根�
 
 首先明确一下解题重点：
 
-1. 本次任务？ 要对一颗树进行前序遍历。
+1. 本次任务是什么？ 要对一颗树的根结点进行前序遍历。
 
-2. 根结点的操作？ 先访问自己，把自己加进序列（根据前序遍历定义），再把前序遍历的任务告诉左子树根结点，最后把前序遍历的任务告诉右子树的根结点。
+2. 根结点的操作是什么？ 先访问自己，把自己加进序列（根据前序遍历定义），再把前序遍历的任务告诉左子树根结点，最后把前序遍历的任务告诉右子树的根结点。
 
 这里需要注意的一点是在左子树没有完成遍历之前，右子树是不会开始遍历的。
 
@@ -119,72 +119,154 @@ private void traversalHelper(List<Integer> res, TreeNode root) {
 
 #### 树的中序遍历
 
-前序遍历的顺序，先遍历根结点，再遍历左子树，最后遍历右子树。[题目链接](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+中序遍历的顺序，先遍历左子树，中间遍历根结点，最后遍历右子树。[LeetCode 94](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)
+
+这里就不再模拟遍历过程了，不过还是要想一下两个问题。
+
+1. 本次任务是什么？ 要对一颗树的根结点进行中序遍历。
+
+2. 根结点的操作是什么？ 先把中序遍历的任务告诉左子树根节点，再访问自己，把自己加进序列，最后把中序遍历的任务告诉右子树的根结点。
+
+```java
+public List<Integer> inorderTraversal(TreeNode root) {
+    List<Integer> res = new ArrayList<>();
+    traversalHelper(res, root);
+    return res;
+}
+
+private void traversalHelper(List<Integer> res, TreeNode root) {
+    if (root == null) {
+        return;
+    }
+    // 把遍历任务交给左子树。
+    traversalHelper(res, root.left);
+    // 访问自己，把自己加入序列。
+    res.add(root.val);
+    // 把遍历任务交给右子树。
+    traversalHelper(res, root.right);
+}
+```
+
+
 
 #### 树的后序遍历 
 
-前序遍历的顺序，先遍历根结点，再遍历左子树，最后遍历右子树。[题目链接](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+后序遍历的顺序，先遍历左子树，再遍历右子树，最后把根结点加入访问序列。[LeetCode 145](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/)
+
+后序遍历的题目非常多，而且难度较高的通常是后序遍历的题，但是只要能够清晰地抓住解题重点，这些题目都能够迎刃而解。做一个形象的比喻，把这个棵树比成一个学校，根结点就像是校长，它的子结点就是各个学院的院长，院长的子结点就是系主任，系主任的子结点是班长，班长的子结点就是班里同学，每个同学就是一个叶结点。如果这时有一个任务，让校长统计学校人数，校长会一个一个人数吗？当然不会，他会让院长去统计每个院的人数，统计完结果之后，自己要做的就是把每个院人数加起来，再加上自己一个人，就是学校总人数了。每个院长，系主任，也都是一样，把任务传递下去，他们做的事情和校长一样，都是统计一下结果，再加上自己。
+
+这里就用后序遍历的一个应用题，[LeetCode 404. 左叶子之和](https://leetcode-cn.com/problems/sum-of-left-leaves/)，来给出后序遍历的模板。主体部分和前面两种遍历方式是类似的。
+
+首先问自己两个问题：
+
+1. 本次任务是什么？ 找到一颗树的所有左叶子，并求出他们值的和。
+
+2. 根结点的操作是什么？ 
+   1. 检查左子树是不是叶子，是的话，就把他加进统计结果。不是的话，就让左结点去找到他左右左叶子的和。
+   2. 因为右子树不可能时左叶子，所以如果有右子树，直接把任务也交给右子树，让他也统计一份。
+   3. 最后，整合一下左子树和右子树的统计结果，并且返回值，汇报给上级。
+
+```java
+public int sumOfLeftLeaves(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    int res = 0;
+    // 检查左子树是不是叶子。
+    if (isLeaf(root.left)) {
+        // 是的话，把他加入统计结果
+        res += root.left.val;
+    }
+    else {
+        // 不然，把任务交给左子树，并且把他的结果加到我的统计结果中。
+        res += sumOfLeftLeaves(root.left);
+    }
+    // 再合并上右子树的统计结果。
+    res += sumOfLeftLeaves(root.right);
+    return res;
+}
+private boolean isLeaf(TreeNode root) {
+    if (root == null) {
+        return false;
+    }
+    if (root.left == null && root.right == null) {
+        return true;
+    }
+    return false;
+}
+```
+
+
 
 #### 树的层序遍历
 
-前序遍历的顺序，先遍历根结点，再遍历左子树，最后遍历右子树。[题目链接](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+前序遍历的顺序，先遍历根结点，再遍历左子树，最后遍历右子树。[LeetCode 102](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
+
+层序遍历的根据到根结点的距离，逐层从左往右遍历，需要用到 BFS 。关于 BFS 就不在这里进行介绍了。
+
+```java
+public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> res = new ArrayList<>();
+    if (root == null) {
+        return res;
+    }
+    Queue<TreeNode> q = new LinkedList<>();
+    q.offer(root);
+
+    while (!q.isEmpty()) {
+        int size = q.size();
+        List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            TreeNode current = q.poll();
+            level.add(current.val);
+            if (current.left != null) {
+                q.offer(current.left);
+            }
+            if (current.right != null) {
+                q.offer(current.right);
+            }
+        }
+        res.add(level);
+    }
+    return res;
+}
+```
 
 
 
 ### 树的构造
 
-### 二叉树
+#### 根据遍历结果构造树
+
+#### 构造二叉搜索树
+
+#### 删除树的结点
+
+
+
+### 搜索二叉树
+
+
 
 ### 树的路径
 
+#### 树的深度
+
+#### 树的直径
+
+#### 树的最长路径
+
+
+
 ### 树的祖先后代
+
+#### 最低公共祖先
+
+
 
 ### 树与图之间的转化 
 
----
 
-
-
-
-
-
-
-做一个形象的比喻，把这个棵树比成一个学校，根结点就像是校长，它的子结点就是各个学院的院长，院长的子结点就是系主任，系主任的子结点是班长，班长的子结点就是班里同学，每个同学就是一个叶结点。当我们要统计学校人数的时候，校长会一个一个人数吗？当然不会，他会让院长去统计每个院的人数，统计完结果之后，自己要做的就是把每个院人数加起来，再加上自己一个人，就是学校总人数了。每个院长，系主任，也都是一样，把任务传递下去，他们做的事情和校长一样，都是统计一下结果，再加上自己。
-
-例题1：求树的所有结点的值的和。
-
-1. 每个结点做什么？把当前结点的值加到和当中
-2. 
-
----
-
-
-
-1. 
-
-### 目录：
-
-  1. 树的遍历
-     
-  2. 树的构造
-     2.1. 根据遍历结果构造树
-       2.2. 构造二叉搜索树
-       2.3. 删除树的结点
-  3. 二叉树
-     3.1 二叉搜索树
-  4. 树的路径
-     4.1. 树的深度
-       4.2. 树的直径
-       4.3. 树的最长路径
-  5. 树的祖先后代
-     5.1. 最低公共祖先 
-  6. 树与图之间的转化 
-
----
-
-$$
-O(n^2)
-$$
 
 
 
