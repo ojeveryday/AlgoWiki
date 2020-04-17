@@ -64,7 +64,7 @@ LeetCode 中大部分的树都是有根结点的，所以这里仅讨论有根�
 
 前序遍历的顺序，先遍历根结点，再遍历左子树，最后遍历右子树。
 
-[前序遍历题目链接]: https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
+[前序遍历题目链接](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
 
 
 
