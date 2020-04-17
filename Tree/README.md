@@ -1,7 +1,8 @@
-## LeetCode 中 Tree 的题型总结以及 Java 代码模板
+# Tree 的题型总结以及 Java 代码模板
 
----
 ### Tree 的定义：
+
+
  Tree 是 Graph 的一种：
  满足以下三个条件中的任意两个的图就是树， 设图` G `中有` n `个节点和` m `条边。
  1. ` G `是一个联通图。
@@ -48,44 +49,10 @@
 ---
 
 
+$$O(n^2)$$
 
 ---
 
-#### Latex
-
-行内 Latex 支持：$O(n^2)$。
-
-$$m \leq n,\  i < m \implies j = \frac{m+n+1}{2} - i > \frac{m+n+1}{2} - m \geq \frac{2m+1}{2} - m \geq 0$$
-
-> 需要独行 Latex，请使用 `$$` 包围。
-
----
-
-#### 代码
-
-使用一段 `行内代码`。
-
-> 代码片段
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        System.out.print("你好力扣");
-    }
-}
-```
-
-> 组合代码模块
-
-```java [solution1-Java 答案]
-public class Main {
-    public static void main(String[] args) {
-        System.out.print("你好力扣");
-    }
-}
-```
-
----
 
 | 题号 | 标题 | 难易度 | 类型 | 类型2 |
 | :--- | :---:| :---: | :---: | :---: |
