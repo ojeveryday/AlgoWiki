@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AlgoWiki</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="description" content="Description">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="stylesheet" href="//unpkg.com/gitalk/dist/gitalk.css">
+    <!--  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">-->
+    <!--  <link rel="stylesheet" href="//unpkg.com/docsify/themes/buble.css">-->
+    <!-- Theme: Simple (latest v0.x.x) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+    window.$docsify = {
+        name: '目录',
+        repo: 'https://github.com/ojeveryday/AlgoWiki',
+        loadSidebar: true,//侧边栏,_sidebar.md
+        auto2top: true,//切换页面后是否自动跳转到页面顶部
+        coverpage: true,//封面,_coverpage.md
+      	// markdown 的流程图支持
+        markdown: {
+            renderer: {
+                code: function (code, lang) {
+                    if (lang === "mermaid") {
+                        return (
+                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + id++, code) + "</div>"
+                        );
+                    }
+                    return this.origin.code.apply(this, arguments);
+                }
+            }
+        }
+    }
+</script>
+<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+<!-- C++ 代码高亮 -->
+<script src="//unpkg.com/prismjs/components/prism-cpp.min.js"></script>
+<!-- Java 代码高亮 -->
+<script src="//unpkg.com/prismjs/components/prism-java.min.js"></script>
+<!-- Python 代码高亮-->
+<script src="//unpkg.com/prismjs/components/prism-python.min.js"></script>
+<script src="//unpkg.com/prismjs/components/prism-json.min.js"></script>
+<!-- 添加代码右上角复制到剪切板按钮 -->
+<script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+<!-- 支持Markdown中的TaLeX数学公式 -->
+<script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<!-- 代码块选项卡 https://jhildenbiddle.github.io/docsify-tabs/#/ -->
+<script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+</body>
+</html>
