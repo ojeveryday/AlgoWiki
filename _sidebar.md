@@ -1,2 +1,7 @@
-- BinarySearch
-    - [正文](BinarySearch/README.md)
+- 二分查找
+    - [简介](/BinarySearch/01-introduction.md)
+    - [模板一](/BinarySearch/02-template-1.md)
+    - [模板二](/BinarySearch/03-template-2.md)
+    - [模板三](/BinarySearch/04-template-3.md)
+    - [例题](/BinarySearch/05-examples.md)
+    - [练习](/BinarySearch/06-practices.md)
