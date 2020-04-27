@@ -5,3 +5,4 @@
     - [模板三](/BinarySearch/04-template-3.md)
     - [例题](/BinarySearch/05-examples.md)
     - [练习](/BinarySearch/06-practices.md)
+
