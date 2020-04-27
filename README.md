@@ -11,7 +11,8 @@
 1. ⏳学习和总结了常用的模板；
 2. 🚀掌握一类题目的解题技巧；
 3. 📒锻炼了自己的文档书写能力；
-4. 🏃强化了Git和多人协作方法。
+4. 🏃强化了Git和多人协作方法；
+5. 👨‍🔬‍‍两位评审对你的文章进行校阅。
 
 
 
@@ -53,9 +54,41 @@
 ## 协作规范
 
 1. 每个模块有个主写，负责主要思路的书写，以及贡献一种语言。
-
 2. 有Backup负责帮助其他语言的补充，也避免有事情怕耽误了更新。
-3. 分支命名以 **功能名+用户名** 的形式，比如 DFS_fuxuemingzhu。
+
+**分支介绍**：
+
+- master 分支是主干，做项目发布，谨慎修改；
+
+- docsify 分支是预发布分支，在该分支进行预览；
+
+- 其他分支为内容编写分支。
+
+**分支操作**：
+
+1. 本地新建**分支命名**以 功能名+用户名 的形式，比如 DFS_fuxuemingzhu。
+2. 在做 push 操作时，应该按照下面的顺序进行操作：
+
+```shell
+git checkout docsify
+git pull
+git checkout DFS_fuxuemingzhu
+git merge docsify
+git push
+```
+
+3. 新建 pull requests 从 DFS_fuxuemingzhu  到 docsify 分支，并进行代码评审。
+4. 如果评审通过，则合并到 docsify 分支，本地进行预览：
+
+```shell
+git checkout docsify
+git pull
+docsify serve .
+```
+
+5. 确定没有问题，再新建 pull requests 从 docsify  到 master 分支。
+
+6. 合并到主干后，会自动发布，线上地址 https://ojeveryday.github.io/AlgoWiki/#/。
 
 ## 任务认领
 
@@ -66,22 +99,41 @@
 | BFS                | 已认领 |          |
 | BitManipulation    | 已认领 |          |
 | DynamicProgramming | 已认领 |          |
-| Heap               |          |          |
-| Queue              |          |          |
+| Heap               | 已认领 |          |
+| Queue              | 已认领 |          |
 | Sort               | 已认领 |          |
 | Tree               | 已认领 |          |
 | Backtracking       | 已认领 |          |
 | DFS                | 已认领 |          |
-| Graph              |          |          |
+| Graph              | 已认领 |          |
 | LinkedList         | 已认领 |          |
-| Stack              |          |          |
-| TwoPointers        |          |          |
-| BinarySearch       | liweiwei1419 |  80% |
-| Divide&Conquer     |          |          |
-| HashTable          |          |          |
+| Stack              | 已认领 |          |
+| TwoPointers        | 已认领 |          |
+| BinarySearch       | liweiwei1419，OneDirection9 | 已完成 |
+| Divide&Conquer     | 已认领 |          |
+| HashTable          | 已认领 |          |
 | Math               | 已认领 |          |
 | SlidingWindow      | 已认领 |          |
 | String             | 已认领 |          |
 | UnionFind          | 已认领 |          |
 | SegmentTree | 已认领 |          |
+| Array |  | |
+| TopologicalSort |  | |
+| Trie |  | |
+| BinaryIndexedTree |  | |
+| BinarySearchTree |  | |
+| Recursion |  | |
+| Brainteaser |  | |
+| Memoization |  | |
+| Minimax |  | |
+| ReservoirSampling |  | |
+| OrderedMap |  | |
+| Geometry |  | |
+| Random |  | |
+| RejectionSampling |  | |
+| LineSweep |  | |
+| RollingHash |  | |
+| SuffixArray |  | |
+| Design |  | |
+| Greedy |  | |
 | | | |
