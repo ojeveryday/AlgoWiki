@@ -8,3 +8,4 @@
 - UnionFind
     - [introduction](UnionFind/01-introduction.md)
     - [template-1](UnionFind/02-template-1.md)
+    - [template-2](UnionFind/03-template-2.md)
