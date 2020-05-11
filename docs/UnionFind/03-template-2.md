@@ -82,7 +82,7 @@ int main() {
 
 ### 初始状态
 
-![init](/Users/Warmer/Documents/my-repositories/AlgoWiki/docs/UnionFind/02-init.png)
+![init](02-init.png)
 
 给定 6 个人，一开始我们并不知道他们的亲戚关系，所以每个人都是一个单独的集合，每个集合的代表就是它自己。
 
@@ -98,12 +98,18 @@ int main() {
 
 ![pair2](03-pair2.png)
 
-执行 `Union(1, 3)` 时，分别执行 `Find(1)` 和 `Find(3)`。
+执行 `Union(1, 3)` 时，需要先执行 `Find(1)` 和 `Find(3)`。
 
 `1` 的关系网为：`1 -> 2 -> 3`。代码执行路径为 `Find(1) { p[1] = Find(2); } -> Find(2) { p[2] = Find(3); } -> Find(3) { return 3; }`。所以执行之后 `1` 的父节点由 `2` 更改为 `3`。这样下次再调用 `Find(1)` 时就不需要再访问 `2`，压缩了路径。
 
 可以思考一下，如果像基础模板里树退化成链之后，执行一次 `Find(1)` 会变成什么？
 
+> 执行一次 `Find(1)` 之后，`1 2 3 4 5`所有节点的父节点都会变成 `6`，树的高度变成`2`。
+
 ## 时间复杂度
 
 可以先比较下两个模板的评测结果，直观的感受下时间复杂度的变化。
+
+路径压缩版本的并查集时间复杂度是 **`O(logn)`**，`n` 是节点数。
+
+具体证明参考：[R. Tarjan and J. van Leeuwen. Worst-case Analysis of Set Union Algorithms. J. ACM, Vol. 31, No. 2, April 1984, pp. 245-281.](https://www.researchgate.net/publication/220430653_Worst-case_Analysis_of_Set_Union_Algorithms)。
