@@ -1,6 +1,8 @@
 # 进阶模板
 
-基础模板里面最坏情况树会退化成链，采用**路径压缩（Path Compression）**进行优化，将 `x` 到根节点的所有节点全部指向根，`x`  为当前调用 `Find(x)` 函数的节点。这样的好处是会让树变得扁平。
+基础模板里，当查询某个节点的根节点时，要依次遍历父节点，直至根节点。最坏情况时树退化成链，每次执行需要 `O(n)` 的时间复杂度，效率低下。
+
+采用**路径压缩（Path Compression）**进行优化。路径压缩会在执行 `Find(x)` 函数时，将 `x` 到根节点的所有节点全部指向根。这样使得树变得扁平，缩短下次查询时的查找路径。
 
 ## 例题
 
@@ -20,7 +22,7 @@ class UnionFind {
    public:
     vector<int> p;
     UnionFind(int n) {
-        // 集合的代表元素，parent 数组
+        // 集合的代表元素 parent 数组
         p = vector<int>(n, 0);
         // 初始时每个集合的代表元素就是自身
         for (int i = 0; i < n; ++i) {
@@ -49,7 +51,7 @@ class UnionFind {
 };
 
 int main() {
-    freopen("1.txt", "r", stdin);
+    // freopen("1.txt", "r", stdin);
     int n, m, p;
     cin >> n >> m >> p;
 
@@ -84,11 +86,11 @@ int main() {
 
 ![init](02-init.png)
 
-给定 6 个人，一开始我们并不知道他们的亲戚关系，所以每个人都是一个单独的集合，每个集合的代表就是它自己。
+给定 6 个人，一开始并不知道他们之间的关系，所以每个人都是一个单独的集合，每个集合的代表就是它自己。
 
 ### 合并
 
-依次 `1 2`，`1 5`，`3 4`，`5 2` 进行合并之后得到：
+依次对 `1 2`，`1 5`，`3 4`，`5 2` 进行合并之后得到：
 
 ![pair1](03-pair1.png)
 
@@ -100,16 +102,29 @@ int main() {
 
 执行 `Union(1, 3)` 时，需要先执行 `Find(1)` 和 `Find(3)`。
 
-`1` 的关系网为：`1 -> 2 -> 3`。代码执行路径为 `Find(1) { p[1] = Find(2); } -> Find(2) { p[2] = Find(3); } -> Find(3) { return 3; }`。所以执行之后 `1` 的父节点由 `2` 更改为 `3`。这样下次再调用 `Find(1)` 时就不需要再访问 `2`，压缩了路径。
+`1` 的关系网为：`1 -> 2 -> 3`。代码执行路径为 `Find(1) { p[1] = Find(2); } -> Find(2) { p[2] = Find(3); } -> Find(3) { return 3; }`。执行之后 `1` 的父节点由 `2` 更改为 `3`，将关系链变成 `1 -> 3`。这样下次再调用 `Find(1)` 时不需要再访问 `2`，压缩了路径。
 
-可以思考一下，如果像基础模板里树退化成链之后，执行一次 `Find(1)` 会变成什么？
+思考一下，如果像基础模板里树退化成链之后，执行一次路径压缩版本的 `Find(1)` 会变成什么？
 
-> 执行一次 `Find(1)` 之后，`1 2 3 4 5`所有节点的父节点都会变成 `6`，树的高度变成`2`。
+> 执行一次 `Find(1)` 之后，会得到如下结构：
+>
+> ![opt](03-opt.png)
+>
+> 下次再调用 `Find(1)`，`Find(2)` 等时，只需跳一步就能抵达根节点。
+
+## 注意
+
+路径压缩只优化 `x` 节点到其根节点的路径，而 **`x` 子节点的路径不会被优化**。
 
 ## 时间复杂度
 
 可以先比较下两个模板的评测结果，直观的感受下时间复杂度的变化。
 
-路径压缩版本的并查集时间复杂度是 **`O(logn)`**，`n` 是节点数。
+理论上，执行 $m$ 次 `Find` 操作，$n-1$ 次 `Union` 操作的时间复杂度是 **$O(mlogn)$**，其中 $m \geq n $。
 
-具体证明参考：[R. Tarjan and J. van Leeuwen. Worst-case Analysis of Set Union Algorithms. J. ACM, Vol. 31, No. 2, April 1984, pp. 245-281.](https://www.researchgate.net/publication/220430653_Worst-case_Analysis_of_Set_Union_Algorithms)。
+**Theorem.** *[Tarjan-van Leeuwen 1984]* Starting from an empty data structure, path compression (with naive linking) performs any intermixed sequence of $m \geq n$ find and $n-1$ union operations in $O(mlogn)$ time.[1]
+
+## 引用
+
+[1]：[R. Tarjan and J. van Leeuwen. Worst-case Analysis of Set Union Algorithms. J. ACM, Vol. 31, No. 2, April 1984, pp. 245-281.](https://www.researchgate.net/publication/220430653_Worst-case_Analysis_of_Set_Union_Algorithms)
+
