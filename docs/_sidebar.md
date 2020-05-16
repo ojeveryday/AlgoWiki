@@ -10,3 +10,5 @@
     - [template-1](UnionFind/02-template-1.md)
     - [template-2](UnionFind/03-template-2.md)
     - [template-3](UnionFind/04-template-3.md)
+    - [examples](UnionFind/05-examples.md)
+    - [practices](UnionFind/06-practices.md)
