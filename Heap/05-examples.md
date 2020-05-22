@@ -26,25 +26,26 @@ class Solution {
                 (a, b) -> map.get(b).equals(map.get(a)) ? b.compareTo(a) : map.get(a) - map.get(b)
         );
 
-        map.keySet().forEach(item -> {
-            heap.add(item);
-            if (heap.size() > k)
+        for (String key : map.keySet()) {
+            heap.add(key);
+            if (heap.size() > k) {
                 heap.poll();
-        });
+            }
+        }
 
         LinkedList<String> res = new LinkedList<>();
         LinkedList<Integer> freq = new LinkedList<>();
-        while(!heap.isEmpty()){
+        while (!heap.isEmpty()) {
             freq.add(map.get(heap.peek()));
             res.add(heap.poll());
         }
-        for (Integer item : freq) {
-            System.out.println(item);
-        }
+
         Collections.reverse(res);
         return res;
     }
 }
+
+
 ```
 
 <!-- tabs:end -->

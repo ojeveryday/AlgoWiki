@@ -23,7 +23,7 @@ public int findKthLargest(int[] nums, int k) {
 
     for (Integer num : nums) {
         minHeap.add(num);
-        if(minHeap.size() > k){
+        if (minHeap.size() > k) {
             minHeap.poll();
         }
     }

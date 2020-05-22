@@ -26,15 +26,20 @@
 #### **Java**
 
 ```java
+
 public double findMedian() {
-    if(maxHeap.isEmpty() && minHeap.isEmpty()){
+    if (maxHeap.isEmpty() && minHeap.isEmpty()) {
         return 0.0;
     }
-    if(minHeap.isEmpty()){
+    if (minHeap.isEmpty()) {
         return maxHeap.peek();
     }
-    return maxHeap.size() == minHeap.size() ? maxHeap.peek() + (minHeap.peek() - maxHeap.peek()) / 2.0 : (double)maxHeap.peek();
+    if (maxHeap.size() == minHeap.size()) {
+        return maxHeap.peek() + (minHeap.peek() - maxHeap.peek()) / 2.0;
+    } 
+    return maxHeap.peek();
 }
+
 ```
 <!-- tabs:end -->
 
@@ -47,14 +52,16 @@ public double findMedian() {
 #### **Java**
 
 ```java
+
 public void addNum(int num) {
-    if(num <= findMedian()){
+    if (num <= findMedian()) {
         maxHeap.add(num);
-    }else{
+    } else {
         minHeap.add(num);
     }
     balance();
 }
+
 ```
 <!-- tabs:end -->
 
@@ -65,14 +72,15 @@ public void addNum(int num) {
 #### **Java**
 
 ```java
-public void balance(){
-    if(maxHeap.isEmpty() && minHeap.isEmpty()){
-        return ;
+
+public void balance() {
+    if (maxHeap.isEmpty() && minHeap.isEmpty()) {
+        return;
     }
-    while(minHeap.size() > maxHeap.size()){
+    while (minHeap.size() > maxHeap.size()) {
         maxHeap.add(minHeap.poll());
     }
-    while(maxHeap.size() - minHeap.size() > 1){
+    while (maxHeap.size() - minHeap.size() > 1) {
         minHeap.add(maxHeap.poll());
     }
 }
@@ -85,63 +93,62 @@ public void balance(){
 #### **Java**
 
 ```java
+
 class MedianFinder {
 
     PriorityQueue<Integer> minHeap = null;
     PriorityQueue<Integer> maxHeap = null;
 
-    /** initialize your data structure here. */
+
     public MedianFinder() {
         // java 中默认的实现是最小堆
         minHeap = new PriorityQueue<>();
-        maxHeap = new PriorityQueue<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer i1, Integer i2) {
-                return i2.compareTo(i1);
-            }
-        });
+        maxHeap = new PriorityQueue<>((a , b) -> b - a);
     }
 
     public void addNum(int num) {
-        if(num <= findMedian()){
+        if (num <= findMedian()) {
             maxHeap.add(num);
-        }else{
+        } else {
             minHeap.add(num);
         }
         balance();
     }
 
-    public void balance(){
-        if(maxHeap.isEmpty() && minHeap.isEmpty()){
-            return ;
+    public void balance() {
+        if (maxHeap.isEmpty() && minHeap.isEmpty()) {
+            return;
         }
-        while(minHeap.size() > maxHeap.size()){
+        while (minHeap.size() > maxHeap.size()) {
             maxHeap.add(minHeap.poll());
         }
-        while(maxHeap.size() - minHeap.size() > 1){
+        while (maxHeap.size() - minHeap.size() > 1) {
             minHeap.add(maxHeap.poll());
         }
     }
 
     public double findMedian() {
-        if(maxHeap.isEmpty() && minHeap.isEmpty()){
+        if (maxHeap.isEmpty() && minHeap.isEmpty()) {
             return 0.0;
         }
-        if(minHeap.isEmpty()){
+        if (minHeap.isEmpty()) {
             return maxHeap.peek();
         }
-        return maxHeap.size() == minHeap.size() ? maxHeap.peek() + (minHeap.peek() - maxHeap.peek()) / 2.0 : (double)maxHeap.peek();
+        if (maxHeap.size() == minHeap.size()) {
+            return maxHeap.peek() + (minHeap.peek() - maxHeap.peek()) / 2.0;
+        }
+        return (double) maxHeap.peek();
     }
 
-    public static void main(String[] args) {
-        MedianFinder finder = new MedianFinder();
-        System.out.println(finder.findMedian());
-        finder.addNum(1);
-        finder.addNum(2);
-        finder.addNum(3);
-        finder.addNum(4);
-        System.out.println(finder.findMedian());
-    }
+    // public static void main(String[] args) {
+    //     MedianFinder finder = new MedianFinder();
+    //     System.out.println(finder.findMedian());
+    //     finder.addNum(1);
+    //     finder.addNum(2);
+    //     finder.addNum(3);
+    //     finder.addNum(4);
+    //     System.out.println(finder.findMedian());
+    // }
 }
 
 ```

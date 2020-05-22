@@ -7,8 +7,8 @@
     - [练习](/BinarySearch/06-practices.md)
 
 - Heap
-    - [简介](/Heap/01-introduction.md)
-    - [堆的构建和堆排序](/Heap/02-template-1.md)
+    - [优先队列和堆](/Heap/01-introduction.md)
+    - [堆的实现和堆排序](/Heap/02-template-1.md)
     - [求(前/第）K(大/小/个)问题](/Heap/03-template-2.md)
     - [双堆法（大小堆法）](/Heap/04-template-3.md)
     - [例题](/Heap/05-examples.md)

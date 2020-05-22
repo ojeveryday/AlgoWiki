@@ -3,6 +3,7 @@
 ## 题型一： 前k个类型的题目 
 | 题目                                                         | 提示                                   |
 | ------------------------------------------------------------ | -------------------------------------- |
+| [23. 合并k个排序链表(hard)](https://leetcode-cn.com/problems/merge-k-sorted-lists/)（必做） |   经典题目           |
 | [215. 数组中的第K个最大元素 (easy)](https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/)（必做） |   例题           |
 | [264. 丑数 II (medium)](https://leetcode-cn.com/problems/ugly-number-ii/) |                                        |
 | [347. 前 K 个高频元素 (medium)](https://leetcode-cn.com/problems/top-k-frequent-elements/) (必做) |     这类题型的基础题                                |
