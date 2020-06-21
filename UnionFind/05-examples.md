@@ -21,8 +21,10 @@ class Solution {
         m = grid.size();
         n = grid[0].size();
         cnt = 0;
-        p = vector<int>(m * n, 0);
-        for (int i = 0; i < m * n; ++i) p[i] = i;
+        parent = vector<int>(m * n, 0);
+        for (int i = 0; i < m * n; ++i) {
+            parent[i] = i;
+        }
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (grid[i][j] == '1') {
@@ -52,21 +54,23 @@ class Solution {
 
    private:
     int m, n, cnt;
-    vector<int> p;
+    vector<int> parent;
     int get(int i, int j) { 
-        return i * n + j; 
+        return i * n + j;
     }
 
     int Find(int x) {
-        if (x != p[x]) p[x] = Find(p[x]);
-        return p[x];
+        if (x != parent[x]) {
+            parent[x] = Find(parent[x]);
+        }
+        return parent[x];
     }
 
     void Union(int x, int y) {
         int px = Find(x);
         int py = Find(y);
         if (px != py) {
-            p[px] = py;
+            parent[px] = py;
             --cnt;
         }
     }
@@ -90,40 +94,51 @@ class Solution {
 请你设计一个算法，计算最多能执行多少次 move 操作？
 
 ```cpp
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
+
 class Solution {
-public:
+   public:
     int removeStones(vector<vector<int>>& stones) {
         islands = 0;
-        for(auto &v: stones) {
+        for (auto& v : stones) {
             Union(v[0], ~v[1]);
         }
         return stones.size() - islands;
     }
-    
-private:
-    unordered_map<int, int> p;
+
+   private:
+    unordered_map<int, int> parent;
     int islands;
-    
+
     int Find(int x) {
-        if(!p.count(x)) p[x] = x, ++islands;
-        if(x != p[x]) p[x] = Find(p[x]);
-        return p[x];
+        if (!parent.count(x)) {
+            parent[x] = x;
+            ++islands;
+        }
+        if (x != parent[x]) {
+            parent[x] = Find(parent[x]);
+        }
+        return parent[x];
     }
-    
+
     void Union(int x, int y) {
         int px = Find(x), py = Find(y);
-        if(px != py) p[px] = py, --islands;
+        if (px != py) {
+            parent[px] = py;
+            --islands;
+        }
     }
 };
 ```
 
-[Count the Number of Islands O(N)](https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/discuss/197668/Count-the-Number-of-Islands-O(N))
-
-属于同一行或者同一列的石头可以合并为一个集合。在这个集合里，我们能找到一个最优的方法，进行 move 操作，直到最后只剩一个石头。所以剩余的石头数量等于集合数量，move 操作次数就是石头数量 - 剩余石头数量。
+将处于同一行或者同一列的石头两两相连，这样会得到一个图，互相连通的石子组成一个连通分量。在一个连通分量里，我们能找到一个最优的方法，进行 move 操作，直到最后只剩一个石头。首先，我们要知道每个石子都属于一个连通分量，同时在一个连通分量中移除石子不会影响到其他的连通分量。在有了这个前提之下，我们可以推断出，如果把连通分量作为一个生成树来看，每次都移除树中的叶子节点，重复这个操作，最后就只会剩下一个根节点。
 
 如何使用并查集来解决这个问题？
 
-如果考虑直接合并石头的话，当 `(a, b)` 点有石头时，我们需要遍历找到所有 `x=a` 或者 `y=b` 的石头进行合并，时间复杂度是 `O(n^2)`，开销比较大。
+如果考虑直接合并石头的话，当 `(a, b)` 点有石头时，我们需要遍历找到所有 `x=a` 或者 `y=b` 的石头进行合并，时间复杂度是 $O(n^2)$，开销比较大。
 
 换个角度思考，当 `(a, b)` 这个点有石头时，相当于将 `x=a` 与 `y=b` 两条平行于坐标轴的线绑定在一起。集合的主体并不是石头，而是线。
 
