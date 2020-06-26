@@ -119,6 +119,41 @@ class Solution(object):
         return -1
 ```
 
+#### **javascript**
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var search = function(nums, target) {
+  // 特殊用例判断
+  let len = nums.length
+  if (len === 0) {
+    return -1
+  }
+  // 在 [left, right] 区间里查找 target
+  let left = 0
+  let right = len - 1
+  while (left <= right) {
+    // 为了防止 left + right 整形溢出，写成如下形式
+    let mid = left + ((right - left) >> 1)
+    if (nums[mid] === target) {
+      return mid
+    } else if (nums[mid] > target) {
+      // 下一轮搜索区间：[left, mid - 1]
+      right = mid - 1
+    } else {
+      // 此时：nums[mid] < target
+      // 下一轮搜索区间：[mid + 1, right]
+      left = mid + 1
+    }
+  }
+  return -1
+};
+```
+
 <!-- tabs:end -->
 
 注意事项：
