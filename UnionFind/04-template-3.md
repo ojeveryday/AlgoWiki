@@ -152,7 +152,7 @@ int main() {
 
 ## 引用
 
-[1]：[Efficiency of a Good But Not Linear Set Union Algorithm](http://www.e-maxx.ru/bookz/files/dsu/Efficiency of a Good But Not Linear Set Union Algorithm. Tarjan.pdf)
+[1]：[Efficiency of a Good But Not Linear Set Union Algorithm](http://www.e-maxx.ru/bookz/files/dsu/Efficiency%20of%20a%20Good%20But%20Not%20Linear%20Set%20Union%20Algorithm.%20Tarjan.pdf)
 
 [2]：[UnionFind](https://www.cs.princeton.edu/courses/archive/spring13/cos423/lectures/UnionFind.pdf)
 
