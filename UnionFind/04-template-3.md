@@ -68,9 +68,9 @@ class UnionFind {
     vector<int> rank;
     UnionFind(int n) {
         // 集合的代表元素 parent 数组
-        parent = vector<int>(n, 0);
+        parent.resize(n);
         // 集合的节点个数 rank 数组
-        rank = vector<int>(n, 1);
+        rank.resize(n);
         // 初始时每个集合的代表元素就是自身
         // 初始时每个集合只有一个元素
         for (int i = 0; i < n; ++i) {
@@ -79,8 +79,8 @@ class UnionFind {
         }
     }
 
+    /* 查找 x 所在集合的代表元素，即父节点 */
     int Find(int x) {
-        /* 查找 x 所在集合的代表元素，即父节点 */
         if (x != parent[x]) {
             // 非集合代表元素，在递归调用返回的时候，将沿途经过的结点指向根节点
             parent[x] = Find(parent[x]);
@@ -88,8 +88,8 @@ class UnionFind {
         return parent[x];
     }
 
+    /* 合并 x y 所在集合 */
     void Union(int x, int y) {
-        /* 合并 x y 所在集合 */
         // 先查找 x y 所在集合的代表元素
         int px = Find(x), py = Find(y);
         if (px != py) {
@@ -110,7 +110,6 @@ class UnionFind {
 };
 
 int main() {
-    // freopen("1.txt", "r", stdin);
     int n, m, p;
     cin >> n >> m >> p;
 
@@ -153,7 +152,7 @@ int main() {
 
 ## 引用
 
-[1]：[Efficiency of a Good But Not Linear Set Union Algorithm]([http://www.e-maxx.ru/bookz/files/dsu/Efficiency%20of%20a%20Good%20But%20Not%20Linear%20Set%20Union%20Algorithm.%20Tarjan.pdf](http://www.e-maxx.ru/bookz/files/dsu/Efficiency of a Good But Not Linear Set Union Algorithm. Tarjan.pdf))
+[1]：[Efficiency of a Good But Not Linear Set Union Algorithm](http://www.e-maxx.ru/bookz/files/dsu/Efficiency of a Good But Not Linear Set Union Algorithm. Tarjan.pdf)
 
 [2]：[UnionFind](https://www.cs.princeton.edu/courses/archive/spring13/cos423/lectures/UnionFind.pdf)
 

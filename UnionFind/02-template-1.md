@@ -18,7 +18,7 @@
 >
 > 第一行：三个整数 `n`，`m`，`p`，（`n<=5000`，`m<=5000`，`p<=5000`），分别表示有 `n` 个人，`m` 个亲戚关系，询问 `p` 对亲戚关系。
 >
-> 以下 `m` 行：每行两个数 `Mi`，`Mj`，`1<=Mi`，`Mj<=N`，表示 `Mi` 和 `Mj` 具有亲戚关系。
+> 以下 `m` 行：每行两个数 `Mi`，`Mj`，`1 <= Mi, Mj <= N`，表示 `Mi` 和 `Mj` 具有亲戚关系。
 >
 > 接下来 `p` 行：每行两个数 `Pi`，`Pj`，询问 `Pi` 和 `Pj` 是否具有亲戚关系。
 >
@@ -48,7 +48,7 @@
 
 ## 分析
 
-`Mi`，`Mj` 是亲戚关系代表可以合并 `Mi`，`Mj` 所在的集合。`Pi`，`Pj` 是否具有亲戚关系，只需判断他们是否在同一集合。
+`Mi`、`Mj` 是亲戚关系代表可以合并 `Mi`、`Mj` 所在的集合。`Pi`、`Pj` 是否具有亲戚关系，只需判断他们是否在同一集合。
 
 ### 初始状态
 
@@ -82,8 +82,6 @@
 
 ## 代码
 
-先展示代码，细节分析在代码之后。
-
 ```cpp
 #include <iostream>
 #include <vector>
@@ -95,15 +93,15 @@ class UnionFind {
     vector<int> parent;
     UnionFind(int n) {
         // 集合的代表元素 parent 数组
-        parent = vector<int>(n, 0);
+        parent.resize(n);
         // 初始时每个集合的代表元素就是自身
         for (int i = 0; i < n; ++i) {
             parent[i] = i;
         }
     }
 
+    /* 查找 x 所在集合的代表元素，即父节点 */
     int Find(int x) {
-        /* 查找 x 所在集合的代表元素，即父节点 */
         while (x != parent[x]) {
             // 不断循环查找根结点
             x = parent[x];
@@ -111,8 +109,8 @@ class UnionFind {
         return parent[x];
     }
 
+    /* 合并 x y 所在集合 */
     void Union(int x, int y) {
-        /* 合并 x y 所在集合 */
         // 查找 x y 所在集合的代表元素
         int px = Find(x), py = Find(y);
         if (px != py) {
@@ -123,7 +121,6 @@ class UnionFind {
 };
 
 int main() {
-    // freopen("1.txt", "r", stdin);
     int n, m, p;
     cin >> n >> m >> p;
 
@@ -169,7 +166,7 @@ int main() {
 
 ![time complexity](02-tc.png)
 
-每次查询节点 `1` 的时候都需要遍历整个「树」，所以 `Find` 函数最坏时间复杂度是：$O(n)$，$n$ 为节点数。
+每次查询节点 `1` 的时候都需要遍历整棵「树」，所以 `Find` 函数最坏时间复杂度是：$O(n)$，$n$ 为节点数。
 
 ## 空间复杂度
 

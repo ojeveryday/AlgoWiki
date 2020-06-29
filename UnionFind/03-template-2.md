@@ -2,7 +2,7 @@
 
 基础模板里，当查询某个节点的根节点时，要依次遍历父节点，直至根节点。最坏情况时树退化成链，每次执行需要 $O(n)$ 的时间复杂度，效率低下。
 
-采用**路径压缩（Path Compression）**进行优化。路径压缩会在执行 `Find(x)` 函数时，将 `x` 到根节点的所有节点全部指向根。由于我们用的是代表元法，树的形态并不重要，路径压缩保证了同一棵树的根结点不变，但是树变的扁平，缩短下次查询时的查找路径。
+采用**路径压缩（Path Compression）**进行优化。路径压缩会在执行 `Find(x)` 函数时，将 `x` 到根节点的所有节点全部指向根。由于我们用的是代表元法，树的形态并不重要，路径压缩保证了同一棵树的根结点不变，但是树变得扁平，缩短下次查询时的查找路径。
 
 ## 例题
 
@@ -53,15 +53,15 @@ class UnionFind {
     vector<int> parent;
     UnionFind(int n) {
         // 集合的代表元素 parent 数组
-        parent = vector<int>(n, 0);
+        parent.resize(n);
         // 初始时每个集合的代表元素就是自身
         for (int i = 0; i < n; ++i) {
             parent[i] = i;
         }
     }
 
+    /* 查找 x 所在集合的代表元素，即父节点 */
     int Find(int x) {
-        /* 查找 x 所在集合的代表元素，即父节点 */
         if (x != parent[x]) {
             // 非集合代表元素，在递归调用返回的时候，将沿途经过的结点指向根节点
             parent[x] = Find(parent[x]);
@@ -69,8 +69,8 @@ class UnionFind {
         return parent[x];
     }
 
+    /* 合并 x y 所在集合 */
     void Union(int x, int y) {
-        /* 合并 x y 所在集合 */
         // 先查找 x y 所在集合的代表元素
         int px = Find(x), py = Find(y);
         if (px != py) {
@@ -81,7 +81,6 @@ class UnionFind {
 };
 
 int main() {
-    // freopen("1.txt", "r", stdin);
     int n, m, p;
     cin >> n >> m >> p;
 
