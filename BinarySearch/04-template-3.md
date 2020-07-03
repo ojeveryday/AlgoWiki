@@ -83,4 +83,30 @@ def search(nums: List[int], left: int, right: int, target: int) -> int:
     return -1
 ```
 
+#### **Javascript**
+
+```javascript
+function search (nums, left, right, target) {
+    while (left + 1 < right) {
+        // 选择中位数时下取整
+        let mid = left + ((right - left) >> 1)
+        if (nums[mid] === target) {
+            return mid
+        } else if (nums[mid] < target) {
+            left = mid
+        } else {
+            right = mid
+        }
+    }
+
+    if (nums[left] === target) {
+        return left
+    }
+    if (nums[right] === target) {
+        return right
+    }
+    return -1
+}
+```
+
 <!-- tabs:end -->

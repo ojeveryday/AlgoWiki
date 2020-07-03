@@ -114,6 +114,40 @@ class Solution(object):
 
 ```
 
+#### **Javascript**
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function(nums, target) {
+    let len = nums.length
+    if (len === 0) {
+       return 0
+    }
+    // 特判
+    if (nums[len - 1] < target) {
+        return len
+    }
+    let left = 0
+    let right = len - 1
+    while (left < right) {
+        let mid = left + ((right - left) >> 1)
+        // 严格小于target 的元素一定不是解
+        if (nums[mid] < target) {
+            // 下一轮搜索区间是[mid + 1, right]
+            left = mid + 1
+        } else {
+            right = mid
+        }
+    }
+    return left
+}
+
+```
+
 <!-- tabs:end -->
 
 <!-- tabs:start -->
@@ -202,6 +236,36 @@ class Solution(object):
         return left
 ```
 
+#### **Javascript**
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function(nums, target) {
+    let len = nums.length
+    if (len === 0) {
+       return 0
+    }
+    let left = 0
+    // 因为有可能数组的最后一个元素的位置的下一个是我们要找的，故右边界是 len
+    let right = len
+    while (left < right) {
+        let mid = left + ((right - left) >> 1)
+        // 严格小于 target 的元素一定不是解
+        if (nums[mid] < target) {
+            // 下一轮搜索区间是 [mid + 1, right]
+            left = mid + 1
+        } else {
+            right = mid
+        }
+    }
+    return left
+}
+
+```
 <!-- tabs:end -->
 
 **复杂度分析**：
@@ -320,6 +384,37 @@ class Solution(object):
                 # 下一轮搜索的区间是 [mid, right]
                 left = mid
         return left
+```
+
+#### **Javascript**
+
+```javascript
+/**
+ * @param {number} x
+ * @return {number}
+ */
+var mySqrt = function(x) {
+    if (x === 0) {
+        return 0
+    }
+    if (x === 1) {
+        return 1
+    }
+    let left = 1
+    let right = Math.floor(x / 2)
+    while (left < right) {
+        let mid = left + ((right - left + 1) >> 1)
+        // 不使用mid * mid > x, 防止overflow
+        if (mid > x / mid) {
+            // 下一轮搜索的区间是[left, mid - 1]
+            right = mid - 1
+        } else {
+            // 下一轮搜索的区间是[mid, right]
+            left = mid
+        }
+    }
+    return left
+};
 ```
 
 <!-- tabs:end -->
@@ -518,6 +613,49 @@ class Solution:
             sum += (pile + speed - 1) // speed
         return sum
 
+```
+#### **Javascript**
+
+```javascript
+/**
+ * @param {number[]} piles
+ * @param {number} H
+ * @return {number}
+ */
+var minEatingSpeed = function(piles, H) {
+    let maxVal = 1
+    piles.forEach(pile => {
+        maxVal = Math.max(maxVal, pile)
+    })
+    // 速度最小的时候, 耗时最长
+    let left = 1
+    // 速度最大的时候, 耗时最短
+    let right = maxVal
+    while (left < right) {
+        let mid = left + ((right - left) >> 1)
+        if(calculateSum(piles, mid) > H) {
+            // 耗时太多, 说明速度太慢了, 下一轮搜索区间在 [mid + 1, right]
+            left = mid + 1
+        } else {
+            right = mid
+        }
+    }
+    return left
+};
+/**
+ * 如果返回的小时数严格大于 H，就不符合题意
+ * @param {number[]} piles
+ * @param {number} speed
+ * @return {number} 需要的小时数
+ */
+function calculateSum(piles, speed) {
+    let sum = 0
+    piles.forEach(pile => {
+        // 向上取整
+        sum += Math.ceil(pile / speed)
+    })
+    return sum
+}
 ```
 
 <!-- tabs:end -->

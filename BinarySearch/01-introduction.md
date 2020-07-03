@@ -1,6 +1,6 @@
 # 二分查找算法
 
-作者：liweiwei1419；OneDirection9；审核：
+作者：liweiwei1419；OneDirection9；审核：liweiwei1419；zerotrac。
 
 二分查找是计算机科学中最基本、最有用的算法之一，在基础算法的学习中是非常重要的。
 
