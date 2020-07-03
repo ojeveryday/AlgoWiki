@@ -1,14 +1,14 @@
-- BinarySearch
-    - [introduction](BinarySearch/01-introduction.md)
-    - [template-1](BinarySearch/02-template-1.md)
-    - [template-2](BinarySearch/03-template-2.md)
-    - [template-3](BinarySearch/04-template-3.md)
-    - [examples](BinarySearch/05-examples.md)
-    - [practices](BinarySearch/06-practices.md)
-- UnionFind
-    - [introduction](UnionFind/01-introduction.md)
-    - [template-1](UnionFind/02-template-1.md)
-    - [template-2](UnionFind/03-template-2.md)
-    - [template-3](UnionFind/04-template-3.md)
-    - [examples](UnionFind/05-examples.md)
-    - [practices](UnionFind/06-practices.md)
+- 二分查找
+    - [简介](BinarySearch/01-introduction.md)
+    - [模板一](BinarySearch/02-template-1.md)
+    - [模板二](BinarySearch/03-template-2.md)
+    - [模板三](BinarySearch/04-template-3.md)
+    - [例题](BinarySearch/05-examples.md)
+    - [练习](BinarySearch/06-practices.md)
+- 并查集
+    - [简介](UnionFind/01-introduction.md)
+    - [模板一](UnionFind/02-template-1.md)
+    - [模板二](UnionFind/03-template-2.md)
+    - [模板三](UnionFind/04-template-3.md)
+    - [例题](UnionFind/05-examples.md)
+    - [练习](UnionFind/06-practices.md)
