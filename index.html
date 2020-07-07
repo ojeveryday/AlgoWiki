@@ -22,22 +22,27 @@
     window.$docsify = {
         name: '目录',
         repo: 'https://github.com/ojeveryday/AlgoWiki',
-        loadSidebar: true,//侧边栏,_sidebar.md
-        auto2top: true,//切换页面后是否自动跳转到页面顶部
-        coverpage: true,//封面,_coverpage.md
-      	// markdown 的流程图支持
-        markdown: {
-            renderer: {
-                code: function (code, lang) {
-                    if (lang === "mermaid") {
-                        return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + id++, code) + "</div>"
-                        );
-                    }
-                    return this.origin.code.apply(this, arguments);
-                }
+        loadSidebar: true,// 侧边栏
+        maxLevel: 2,
+        subMaxLevel: 2,// 最大支持渲染的标题层级
+        auto2top: true,// 切换页面后是否自动跳转到页面顶部
+        coverpage: true, //封面
+        // 页面最后尾标
+        plugins: [
+            function (hook) {
+                var footer = [
+                    '<hr/>',
+                    '<footer>',
+                    '<span><a href="https://github.com/ojeveryday/AlgoWiki">来自AlgoWiki</a></span><br>',
+                    '<span><a href="https://docsify.js.org/#/">Powered by docsify</a></span>',
+                    '</footer>'
+                ].join('')
+
+                hook.afterEach(function (html) {
+                    return html + footer
+                })
             }
-        }
+        ]
     }
 </script>
 <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
