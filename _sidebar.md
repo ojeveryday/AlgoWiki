@@ -13,3 +13,11 @@
     - [双堆法（大小堆法）](/Heap/04-template-3.md)
     - [例题](/Heap/05-examples.md)
     - [练习](/Heap/06-practices.md)
+
+- 并查集
+    - [简介](UnionFind/01-introduction.md)
+    - [模板一](UnionFind/02-template-1.md)
+    - [模板二](UnionFind/03-template-2.md)
+    - [模板三](UnionFind/04-template-3.md)
+    - [例题](UnionFind/05-examples.md)
+    - [练习](UnionFind/06-practices.md)
