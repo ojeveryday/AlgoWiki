@@ -1,10 +1,19 @@
 - 二分查找
-    - [简介](BinarySearch/01-introduction.md)
-    - [模板一](BinarySearch/02-template-1.md)
-    - [模板二](BinarySearch/03-template-2.md)
-    - [模板三](BinarySearch/04-template-3.md)
-    - [例题](BinarySearch/05-examples.md)
-    - [练习](BinarySearch/06-practices.md)
+    - [简介](/BinarySearch/01-introduction.md)
+    - [模板一](/BinarySearch/02-template-1.md)
+    - [模板二](/BinarySearch/03-template-2.md)
+    - [模板三](/BinarySearch/04-template-3.md)
+    - [例题](/BinarySearch/05-examples.md)
+    - [练习](/BinarySearch/06-practices.md)
+
+- Heap
+    - [优先队列和堆](/Heap/01-introduction.md)
+    - [堆的实现和堆排序](/Heap/02-template-1.md)
+    - [求(前/第）K(大/小/个)问题](/Heap/03-template-2.md)
+    - [双堆法（大小堆法）](/Heap/04-template-3.md)
+    - [例题](/Heap/05-examples.md)
+    - [练习](/Heap/06-practices.md)
+
 - 并查集
     - [简介](UnionFind/01-introduction.md)
     - [模板一](UnionFind/02-template-1.md)
