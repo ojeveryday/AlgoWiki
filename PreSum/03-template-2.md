@@ -32,7 +32,7 @@ vector<int> runningSum(vector<int>& nums) {
 }
 ```
 
-注意上面的代码中没有给 `preSum[0]` 赋值，所以 `preSum[0] = 0`。
+注意，上面的代码中没有给 `preSum[0]` 赋值，在 C++ 中 vector<int> 的默认值为 0。
 
 - 时间复杂度：$O(N)$;
 

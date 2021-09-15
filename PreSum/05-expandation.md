@@ -23,7 +23,7 @@
 
 可以用「**前缀和**」来解决，也可以用固定大小为 k 的「**滑动窗口**」来解决。
 
-要求大小为 `k` 的窗口内的最大平均数，可以求 $[i, i + k]$ 区间的「最大和」再除以 k，即要求 `(preSum[i + k] - preSum[i]) / k` 的最大值。
+要求大小为 `k` 的窗口内的最大平均数，可以求 $[i, i + k]$ 区间的「最大和」再除以 k，即求 `(preSum[i + k] - preSum[i]) / k` 的最大值。
 
 于是，「最大平均数」问题被转换成了「最大区间和」问题，然后使用「前缀和」解决。
 
@@ -100,4 +100,30 @@ $S(A, D) = S(O, D) - S(O, E) - S(O, F) + S(O, G)$
 加上子矩形 $S(O, G)$ 面积的原因是 $S(O, E)$ 和 $S(O, F)$ 中都有 $S(O, G)$，即减了两次 $S(O, G)$，所以需要加上一次 $S(O, G)$。
 
 
-弄明白这个原理之后，题目就不难解决了。
+
+代码如下：
+
+```python
+class NumMatrix:
+
+    def __init__(self, matrix: List[List[int]]):
+        if not matrix or not matrix[0]:
+            M, N = 0, 0
+        else:
+            M, N = len(matrix), len(matrix[0])
+        self.preSum = [[0] * (N + 1) for _ in range(M + 1)]
+        for i in range(M):
+            for j in range(N):
+                self.preSum[i + 1][j + 1] = self.preSum[i][j + 1] + self.preSum[i + 1][j]  - self.preSum[i][j] + matrix[i][j]
+
+
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        return self.preSum[row2 + 1][col2 + 1] - self.preSum[row2 + 1][col1] - self.preSum[row1][col2 + 1] + self.preSum[row1][col1]
+
+
+
+# Your NumMatrix object will be instantiated and called as such:
+# obj = NumMatrix(matrix)
+# param_1 = obj.sumRegion(row1,col1,row2,col2)
+```
+
