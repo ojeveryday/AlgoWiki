@@ -14,6 +14,29 @@
 
 这个题让我们求 `preSum[i] = sum(nums[0]…nums[i])`，如果你没有了解过「前缀和」，可能会写出两重循环：每个 `preSum[i]`，累加从 $0$ 位置到 $i$ 位置的 `nums[i]`。即，写出下面的代码：
 
+<!-- tabs:start -->
+
+Java
+
+```Java
+class Solution {
+    public int[] runningSum(int[] nums) {
+        int N = nums.length;
+        int[] preSum = new int[N];
+        for (int i = 0; i < N; ++i) {
+            int sum = 0;
+            for (int j = 0; j <= i; ++j) {
+                sum += nums[j];
+            }
+            preSum[i] = sum;
+        }
+        return preSum;
+    }
+}
+```
+
+C++
+
 ```cpp
 vector<int> runningSum(vector<int>& nums) {
     const int N = nums.size();
@@ -28,6 +51,23 @@ vector<int> runningSum(vector<int>& nums) {
     return preSum;
 }
 ```
+Python
+
+```python
+class Solution(object):
+    def runningSum(self, nums):
+        N = len(nums)
+        preSum = [0] * N
+        for i in range(N):
+            curSum = 0
+            for j in range(i + 1):
+                curSum += nums[j]
+            preSum[i] = curSum
+        return preSum
+```
+
+<!-- tabs:end -->
+
 两重循环的时间复杂度是 $O(N^2)$，效率比较低。
 
 其实我们只要稍微转变一下思路，就发现没必要用两重循环。
@@ -43,6 +83,10 @@ vector<int> runningSum(vector<int>& nums) {
 > 「前缀和」 就是从 `nums` 数组中的第  0 位置开始，累加到第 $i$ 位置的结果，我们常把这个结果保存到数组 `preSum` 中，记为  `preSum[i]`。
 
 写出的代码如下：
+
+<!-- tabs:start -->
+
+C++
 
 
 ```cpp
@@ -60,8 +104,45 @@ vector<int> runningSum(vector<int>& nums) {
 }
 ```
 
-- 时间复杂度：$O(N)$;
+Java
 
+```java
+class Solution {
+    public int[] runningSum(int[] nums) {
+        int N = nums.length;
+        int[] preSum = new int[N];
+        for (int i = 0; i < N; ++i) {
+            if (i == 0) {
+                preSum[i] = nums[i];
+            } else {
+                preSum[i] = preSum[i - 1] + nums[i];
+            }
+        }
+        return preSum;
+    }
+}
+```
+
+Python
+
+```python
+class Solution(object):
+    def runningSum(self, nums):
+        N = len(nums)
+        preSum = [0] * N
+        for i in range(N):
+            if i == 0:
+                preSum[i] = nums[i]
+            else:
+                preSum[i] = preSum[i - 1] + nums[i]
+        return preSum
+```
+
+<!-- tabs:end -->
+
+
+
+- 时间复杂度：$O(N)$;
 - 空间复杂度：$O(N)$。
 
 

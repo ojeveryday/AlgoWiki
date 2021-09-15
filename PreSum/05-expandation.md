@@ -101,7 +101,62 @@ $S(A, D) = S(O, D) - S(O, E) - S(O, F) + S(O, G)$
 
 
 
-代码如下：
+代码如下。
+
+<!-- tabs:start -->
+
+Java
+
+```java
+class NumMatrix {
+    int[][] preSum;
+
+    public NumMatrix(int[][] matrix) {
+        int M = matrix.length;
+        if (M > 0) {
+            int N = matrix[0].length;
+            preSum = new int[M + 1][N + 1];
+            for (int i = 0; i < M; ++i) {
+                for (int j = 0; j < N; ++j) {
+                    preSum[i + 1][j + 1] = preSum[i][j + 1] + preSum[i + 1][j] - preSum[i][j] + matrix[i][j];
+                }
+            }
+        }
+    }
+    
+    public int sumRegion(int row1, int col1, int row2, int col2) {
+        return preSum[row2 + 1][col2 + 1] - preSum[row2 + 1][col1] - preSum[row1][col2 + 1] + preSum[row1][col1]; 
+    }
+}
+```
+
+C++
+
+```C++
+class NumMatrix {
+private:
+    vector<vector<int>> preSum;
+public:
+    NumMatrix(vector<vector<int>>& matrix) {
+        const int M = matrix.size();
+        if (M > 0) {
+            const int N = matrix[0].size();
+            preSum.resize(M + 1, vector<int>(N + 1));
+            for (int i = 0; i < M; ++i) {
+                for (int j = 0; j < N; ++j) {
+                    preSum[i + 1][j + 1] = preSum[i + 1][j] + preSum[i][j + 1] - preSum[i][j] + matrix[i][j];
+                }
+            }
+        }
+    }
+    
+    int sumRegion(int row1, int col1, int row2, int col2) {
+        return preSum[row2 + 1][col2 + 1] - preSum[row2 + 1][col1] - preSum[row1][col2 + 1] + preSum[row1][col1];
+    }
+};
+```
+
+Python
 
 ```python
 class NumMatrix:
@@ -119,11 +174,14 @@ class NumMatrix:
 
     def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
         return self.preSum[row2 + 1][col2 + 1] - self.preSum[row2 + 1][col1] - self.preSum[row1][col2 + 1] + self.preSum[row1][col1]
-
-
-
-# Your NumMatrix object will be instantiated and called as such:
-# obj = NumMatrix(matrix)
-# param_1 = obj.sumRegion(row1,col1,row2,col2)
 ```
+
+<!-- tabs:end -->
+
+**复杂度分析：**
+
+- 空间复杂度：定义二维的「前缀和」数组，需要 $(M + 1) * (N + 1)$ 的空间，所以空间复杂度是 $O(M*N)$；
+- 时间复杂度：
+  - 初始化「前缀和」数组，需要把二维数组遍历一次，时间复杂度是 $O(M*N)$；
+  - 求  `[row1, col1]` 到 `[row2, col2]` 的子矩形的所有元素之和，只用访问 `preSum` 中的四个元素，时间复杂度是 $O(1)$。
 

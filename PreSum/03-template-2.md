@@ -20,6 +20,25 @@ preSum[2] = preSum[1] + nums[1];
 
 对应的代码如下：
 
+<!-- tabs:start -->
+
+Java
+
+```java
+class Solution {
+    public int[] runningSum(int[] nums) {
+        int N = nums.length;
+        int[] preSum = new int[N + 1];
+        for (int i = 0; i < N; ++i) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+        return preSum;
+    }
+}
+```
+
+C++
+
 
 ```cpp
 vector<int> runningSum(vector<int>& nums) {
@@ -32,7 +51,21 @@ vector<int> runningSum(vector<int>& nums) {
 }
 ```
 
-注意，上面的代码中没有给 `preSum[0]` 赋值，在 C++ 中 vector<int> 的默认值为 0。
+Python
+
+```python
+class Solution(object):
+    def runningSum(self, nums):
+        N = len(nums)
+        preSum = [0] * (N + 1)
+        for i in range(0, N):
+            preSum[i + 1] = preSum[i] + nums[i]
+        return preSum
+```
+
+<!-- tabs:end -->
+
+注意，上面的代码中没有给 `preSum[0]` 赋值，在 C++ 中 `vector<int>` 的默认值为 0。
 
 - 时间复杂度：$O(N)$;
 

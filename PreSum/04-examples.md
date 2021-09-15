@@ -78,19 +78,23 @@
 
 <!-- tabs:start -->
 
-**Python**
+**Java** 
 
-```python
-class NumArray:
-
-    def __init__(self, nums: List[int]):
-        N = len(nums)
-        self.preSum = [0] * (N + 1)
-        for i in range(N):
-            self.preSum[i + 1] = self.preSum[i] + nums[i]
-
-    def sumRange(self, i: int, j: int) -> int:
-        return self.preSum[j + 1] - self.preSum[i]
+```java
+class NumArray {
+    private int[] preSum;
+    public NumArray(int[] nums) {
+        final int N = nums.length;
+        preSum = new int[N + 1];
+        for (int i = 0; i < N; ++i) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+    }
+    
+    public int sumRange(int i, int j) {
+        return preSum[j + 1] - preSum[i];
+    }
+}
 ```
 
 **C++**
@@ -114,23 +118,19 @@ private:
 };
 ```
 
-**Java** 
+**Python**
 
-```java
-class NumArray {
-    private int[] preSum;
-    public NumArray(int[] nums) {
-        final int N = nums.length;
-        preSum = new int[N + 1];
-        for (int i = 0; i < N; ++i) {
-            preSum[i + 1] = preSum[i] + nums[i];
-        }
-    }
-    
-    public int sumRange(int i, int j) {
-        return preSum[j + 1] - preSum[i];
-    }
-}
+```python
+class NumArray:
+
+    def __init__(self, nums: List[int]):
+        N = len(nums)
+        self.preSum = [0] * (N + 1)
+        for i in range(N):
+            self.preSum[i + 1] = self.preSum[i] + nums[i]
+
+    def sumRange(self, i: int, j: int) -> int:
+        return self.preSum[j + 1] - self.preSum[i]
 ```
 
 <!-- tabs:end -->
@@ -140,4 +140,4 @@ class NumArray {
 - 空间复杂度：定义「前缀和」数组，需要 $N + 1$ 的空间，所以空间复杂度是 $O(N)$；
 - 时间复杂度：
    - 初始化「前缀和」数组，需要把数组遍历一次，时间复杂度是 $O(N)$；
-   - 求 $i ~ j$ 范围内的区间和，只用访问 `preSum[j + 1]` 和 `preSum[i]`，时间复杂度是 $O(1)$。
+   - 求 $[i, j]$ 范围内的区间和，只用访问 `preSum[j + 1]` 和 `preSum[i]`，时间复杂度是 $O(1)$。
