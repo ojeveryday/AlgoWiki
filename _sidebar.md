@@ -12,3 +12,12 @@
     - [模板三](UnionFind/04-template-3.md)
     - [例题](UnionFind/05-examples.md)
     - [练习](UnionFind/06-practices.md)
+
+- 前缀和
+  - [简介](PreSum/01-introduction.md)
+  - [模板一](PreSum/02-template-1.md)
+  - [模板二](PreSum/03-template-2.md)
+  - [例题](PreSum/04-examples.md)
+  - [拓展](PreSum/05-expandation.md)
+  - [练习](PreSum/06-practices.md)
+
