@@ -73,7 +73,7 @@
             // issues 中的名字
             title: location.hash.match(/#(.*?)([?]|$)/)[1],
             // issues 中的 id
-            id: md5(location.pathname),
+            id: location.hash.match(/#(.*?)([?]|$)/)[1],
             // facebook-like distraction free mode
             distractionFreeMode: false
         })
