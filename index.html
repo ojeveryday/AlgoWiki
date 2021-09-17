@@ -70,7 +70,8 @@
             owner: 'ojeveryday',
             // 可以创建 issues 的管理员
             admin: ['ojeveryday','fuxuemingzhu'],
-            id: decodeURI(window.location.pathname),
+            title: location.hash.match(/#(.*?)([?]|$)/)[1],
+            id: location.hash.match(/#(.*?)([?]|$)/)[1],
             // facebook-like distraction free mode
             distractionFreeMode: false
         })
