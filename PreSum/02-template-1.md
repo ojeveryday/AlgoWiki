@@ -1,4 +1,4 @@
-# 滑动窗口模板一
+# 前缀和模板一
 
 例题 1：「力扣」的 [1480. 一维数组的动态和](https://leetcode-cn.com/problems/running-sum-of-1d-array/)。
 
@@ -14,11 +14,13 @@
 
 这个题让我们求 `preSum[i] = sum(nums[0]…nums[i])`，如果你没有了解过「前缀和」，可能会写出两重循环：每个 `preSum[i]`，累加从 $0$ 位置到 $i$ 位置的 `nums[i]`。即，写出下面的代码：
 
+
+
 <!-- tabs:start -->
 
-Java
+#### **Java**
 
-```Java
+```java
 class Solution {
     public int[] runningSum(int[] nums) {
         int N = nums.length;
@@ -35,9 +37,9 @@ class Solution {
 }
 ```
 
-C++
+#### **C++**
 
-```cpp
+```c++
 vector<int> runningSum(vector<int>& nums) {
     const int N = nums.size();
     vector<int> preSum(N, 0);
@@ -51,7 +53,7 @@ vector<int> runningSum(vector<int>& nums) {
     return preSum;
 }
 ```
-Python
+#### **Python**
 
 ```python
 class Solution(object):
@@ -68,12 +70,13 @@ class Solution(object):
 
 <!-- tabs:end -->
 
+
+
 两重循环的时间复杂度是 $O(N^2)$，效率比较低。
 
-其实我们只要稍微转变一下思路，就发现没必要用两重循环。
+其实我们只要稍微转变一下思路，就发现没必要用两重循环。我们使用类似「动态规划」的思想，从一个小问题推导出更大的问题：
 
-当已经求出 **`preSum[i] = sum(nums[0]…nums[i])`**，
-那么 **`preSum[i + 1] = sum(nums[0]…nums[i]) + nums[i + 1]= runningSum[i] + nums[i + 1]`**。
+当已知 `preSum[i]` 是数组前 $i$ 项的和，那么数组的前 $i + 1$ 项的和 `preSum[i + 1] = preSum[i] + nums[i + 1]`。
 
 一个简单的转换，让我们可以省去内层的 `for` 循环。
 
@@ -84,27 +87,11 @@ class Solution(object):
 
 写出的代码如下：
 
+
+
 <!-- tabs:start -->
 
-C++
-
-
-```cpp
-vector<int> runningSum(vector<int>& nums) {
-    const int N = nums.size();
-    vector<int> preSum(N, 0);
-    for (int i = 0; i < N; ++i) {
-        if (i == 0) {
-            preSum[i] = nums[i];
-        } else {
-            preSum[i] = preSum[i - 1] + nums[i]; 
-        }
-    }
-    return preSum;
-}
-```
-
-Java
+#### **Java**
 
 ```java
 class Solution {
@@ -123,7 +110,25 @@ class Solution {
 }
 ```
 
-Python
+#### **C++**
+
+
+```cpp
+vector<int> runningSum(vector<int>& nums) {
+    const int N = nums.size();
+    vector<int> preSum(N, 0);
+    for (int i = 0; i < N; ++i) {
+        if (i == 0) {
+            preSum[i] = nums[i];
+        } else {
+            preSum[i] = preSum[i - 1] + nums[i]; 
+        }
+    }
+    return preSum;
+}
+```
+
+#### **Python**
 
 ```python
 class Solution(object):
@@ -147,8 +152,13 @@ class Solution(object):
 
 
 
-上文是「前缀和」的基本写法。
+上文是「前缀和」的基本求法。
 
-为了防止当 `i = 0` 的时候数组越界，所以加了个 `if (i == 0)` 的判断，即 `i == 0` 时让 `preSum[i] = nums[i]`。
+那我们怎么用「前缀和」数组求数组的区间和呢？
 
-在刷题常用的写法中，可以去除这个 `if` 判断，详见模板二。
+根据前缀和的定义 `preSum[i]` 是数组 `nums` 的前 $i$ 项之和，所以：
+
+1. 数组 $[0, i]$ 区间的和 = `preSum[i]`;
+2. 数组 $[i, j]$ 区间的和 = `preSum[j] - preSum[i - 1]`;
+
+至此，我们已经把如何求「前缀和」以及如何用「前缀和」求数组的区间和讲解清楚了。

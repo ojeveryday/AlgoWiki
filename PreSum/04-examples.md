@@ -76,9 +76,11 @@
 
 本题考察了利用「前缀和」计算数组的区间和，可以套用模板二。
 
+
+
 <!-- tabs:start -->
 
-**Java** 
+#### **Java**
 
 ```java
 class NumArray {
@@ -97,9 +99,9 @@ class NumArray {
 }
 ```
 
-**C++**
+#### **C++**
 
-```cpp
+```c++
 class NumArray {
 public:
     NumArray(vector<int>& nums) {
@@ -118,7 +120,7 @@ private:
 };
 ```
 
-**Python**
+#### **Python**
 
 ```python
 class NumArray:
@@ -134,6 +136,8 @@ class NumArray:
 ```
 
 <!-- tabs:end -->
+
+
 
 **复杂度分析：**
 
