@@ -1,6 +1,6 @@
 
 
-# 拓展
+# 前缀和拓展
 ## 拓展一：隐藏的「前缀和」
 
 例题 1.「力扣」的 [643. 子数组最大平均数 I](https://leetcode-cn.com/problems/maximum-average-subarray-i/) 。
@@ -27,6 +27,74 @@
 
 于是，「最大平均数」问题被转换成了「最大区间和」问题，然后使用「前缀和」解决。
 
+<!-- tabs:start -->
+
+#### **Java**
+
+```java
+class Solution {
+    public double findMaxAverage(int[] nums, int k) {
+        final int N = nums.length;
+        int[] preSum = new int[N + 1];
+        preSum[0] = 0;
+        for (int i = 0; i < N; ++i) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+        int res = Integer.MIN_VALUE;
+        for (int i = 0; i <= N - k; ++i) {
+            res = Math.max(res, preSum[i + k] - preSum[i]);
+        }
+        return (double)res / k;
+    }
+}
+```
+
+
+
+####**C++**
+
+```c++
+class Solution {
+public:
+    double findMaxAverage(vector<int>& nums, int k) {
+        const int N = nums.size();
+        vector<int> preSum(N + 1);
+        for (int i = 0; i < N; ++i) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+        int res = INT_MIN;
+        for (int i = 0; i <= N - k; ++i) {
+            res = max(res, preSum[i + k] - preSum[i]);
+        }
+        return (double)res / k;
+    }
+};
+```
+
+#### **Python**
+
+```python
+class Solution(object):
+    def findMaxAverage(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: float
+        """
+        N = len(nums)
+        preSum = range(N + 1)
+        for i in range(N):
+            preSum[i + 1] = preSum[i] + nums[i]
+        res = float("-inf")
+        for i in range(k - 1, N):
+            res = max(preSum[i + 1] - preSum[i + 1 - k], res)
+        return res / float(k)
+```
+
+
+
+<!-- tabs:end -->
+
 ## 拓展二：二维矩阵的「前缀和」
 另外一种拓展，是求二维矩阵的「前缀和」。
 
@@ -46,16 +114,29 @@
 > ![](04-2d-matrix.png)
 >
 > 输入: 
-> 	["NumMatrix","sumRegion","sumRegion","sumRegion"]
-> 	[[[[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]],[2,1,4,3],[1,1,2,2],[1,2,2,4]]
+>
+> ​	["NumMatrix","sumRegion","sumRegion","sumRegion"]
+>
+> ​	[[[[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]],[2,1,4,3],[1,1,2,2],[1,2,2,4]]
+>
 > 输出: 
-> 	[null, 8, 11, 12]
+>
+> ​	[null, 8, 11, 12]
+>
+> 
 >
 > 解释:
-> 	NumMatrix numMatrix = new NumMatrix([[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]]);
-> 	numMatrix.sumRegion(2, 1, 4, 3); // return 8 (红色矩形框的元素总和)
-> 	numMatrix.sumRegion(1, 1, 2, 2); // return 11 (绿色矩形框的元素总和)
-> 	numMatrix.sumRegion(1, 2, 2, 4); // return 12 (蓝色矩形框的元素总和)
+>
+> ​	NumMatrix numMatrix = new NumMatrix([[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]]);
+> ​	
+>
+> ​	numMatrix.sumRegion(2, 1, 4, 3); // return 8 (红色矩形框的元素总和)
+> ​	
+>
+> ​	numMatrix.sumRegion(1, 1, 2, 2); // return 11 (绿色矩形框的元素总和)
+> ​	
+>
+> ​	numMatrix.sumRegion(1, 2, 2, 4); // return 12 (蓝色矩形框的元素总和)
 
 当「前缀和」拓展到二维区间时，可以用下面的思路求解。
 
