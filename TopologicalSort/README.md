@@ -45,10 +45,31 @@ graph[3].neighbors = [graph[4], graph[5]]
 
 #### 思路
 
-对于 BFS ，我们需要介绍**入度**（ indegree ）的概念。在有向图当中，一个结点的入度表示有多少条边指向它。对应的还有一个概念叫**出度** （ outdegree ），代表从一个结点出发有多少条边，但是在拓扑排序当中我们只会用到入度。入度为 0 的点的集合将作为 BFS 的起点。如果没有入度为零的点，则无法进行拓扑排序。BFS 由先进先出 （First In, First Out, FIFO）的队列 （ queue ）数据结构来实现。BFS 算法实现拓扑排序的文字描述如下：
+该算法也叫 [Kahn 算法](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)。首先，我们需要介绍**入度**（ indegree ）的概念。在有向图当中，一个结点的入度表示有多少条边指向它。对应的还有一个概念叫**出度** （ outdegree ），代表从一个结点出发有多少条边，但是在拓扑排序当中我们只会用到入度。入度为 0 的点的集合将作为 BFS 的起点。如果没有入度为零的点，则无法进行拓扑排序。BFS 由先进先出 （First In, First Out, FIFO）的队列 （ queue ）数据结构来实现。BFS 算法实现拓扑排序的文字描述如下：
 
 1. 遍历邻接表中所有结点和边，计算每个结点的入度。
-2. 从入度为 0 的结点出发进行 BFS ，将入度为 0 的结点放入输出列表。遍历入度为 0 结点的邻接结点时将这些邻接结点的入度减 1，如果其入度是 0 ，则放入队列。
+2. 从入度为 0 的结点出发进行 BFS ，将入度为 0 的结点放入输出列表。遍历入度为 0 结点的邻接结点时将这些邻接结点的入度减 1（相当于删掉已经遍历过的边），如果其入度是 0 ，则放入队列。
+
+伪代码如下
+```python
+L ← 输出列表
+Q ← 包含所有入度为 0 结点的队列
+while ( Q 不为空 ) do
+    n 出列
+    将 n 放入 L
+    for ( n 的所有邻接结点 m ) do
+        删除该边，m 的入度减 1
+        if ( m 入度为 0 ) then
+            m 入列
+
+if （图中存在边） then
+    # 存在环，不可以拓扑排序
+    return None
+else
+    return L
+```
+
+之前说过拓扑排序结果并不唯一，按照字典序 （ lexicographical order ）可以将所有可能的输出结果进行排序。如果需要最大或者最小结果，可以将 Kahn 算法中的队列替换成最大堆/最小堆实现的优先队列即可，具体实现参考[精选例题X]。
 
 **时间复杂度**：计算入度的循环需要遍历每个结点和每条边，BFS 循环也要遍历每一条边并且将每个结点入列和出列一次，入列和出列操作都是 $O(1)$, 所以总的时间复杂度是 $O(|V|+|E|)$ 。
 
@@ -170,6 +191,96 @@ class Solution:
 
 ### 题型二：有向无环图中的最长路径 （课程表）
 
-### 题型三：有向无环图的拓扑排序 （课程表）
+### 题型三：最大/最小字典序拓扑排序
+
+例题 3: Lintcode 第892题，[外星人字典（ Alien Dictionary）](https://www.lintcode.com/problem/892/)
+> 有一种新的使用拉丁字母的外来语言。但是，你不知道字母之间的顺序。你会从词典中收到一个非空的单词列表，其中的单词在这种新语言的规则下按字典顺序排序。请推导出这种语言的字母顺序。
+> 假设所有字母都是小写。
+> 如果单词 a 是单词 b 的前缀且 b 出现在 a 之前，那么这个顺序是无效的。
+> 如果顺序是无效的，则返回空字符串。
+> 这里可能有多个有效的字母顺序，返回以正常字典顺序看来最小的。
+
+**分析**：
+* 字典序可以看出一幅图，结点是所有出现过的拉丁字母，有向边 $(u, v)$ 代表在字典序当中字母 $u$ 排在字母 $v$ 前面。
+* 通过比较相邻的单词，可以得到关于该字典序的线索，将其作为边加入图。
+* 为了返回用正常英文字典顺序看来最小的结果，用 BFS 遍历的时候，需要保证每次出列的字符都是队列中最小的。
+
+
+以下是 BFS + 最小堆实现的代码。
+
+```python
+class Solution:
+    def alienOrder(self, words):
+        # 比较相邻单词构造图
+        graph = self.buildGraph(words)
+        if not graph:
+            return ""
+
+        # 如果存在环, 则不存在有效的字典序
+        topoOrder = self.topoSort_BFS_PriorityQueue(graph)
+        if not topoOrder:
+            return ""
+
+        return ''.join(topoOrder)
+
+    def buildGraph(self, words):
+
+        graph = {char: [] for word in words for char in word}
+
+        for i in range(1, len(words)):
+            w1 = words[i-1]
+            w2 = words[i]
+            for i in range(min(len(w1), len(w2))):
+                if w1[i] != w2[i]:
+                    graph[w1[i]].append(w2[i])
+                    break
+
+                #  如果w2是w1的前缀且w1出现在w2之前，则不存在有效的字典序
+                if i == min(len(w1), len(w2))-1 and len(w1) > len(w2):
+                    return None
+
+        return graph
+
+    def topoSort_BFS_PriorityQueue(self, graph):
+        inDegree = {char: 0 for char in graph}
+
+        for char, neighbors in graph.items():
+            for neighbor in neighbors:
+                inDegree[neighbor] += 1
+
+        pq = [char for char in graph.keys() if inDegree[char] == 0]
+
+        # 最小堆实现的优先队列
+        heapq.heapify(pq)
+        visited = set(pq)
+        topoOrder = []
+        count = len(inDegree)
+
+        while pq:
+            node = heapq.heappop(pq)
+            topoOrder.append(node)
+            count -= 1
+
+            for child in graph[node]:
+                if child in visited:
+                    continue
+                inDegree[child] -= 1
+                if inDegree[child] == 0:
+                    heapq.heappush(pq, child)
+                    visited.add(child)
+
+        # 存在环，不存在有效的字典序
+        if count != 0:
+            return []
+
+        return topoOrder
+```
+
+**复杂度**：
+* 时间复杂度：$O(|V|+|E|)$，其中 $V$ 是所有字符的集合，$E$ 是所有字典序线索的集合。
+* 空间复杂度：$O(|V|+|E|)$
+
 
 ## 精选练习
+
+# 参考
