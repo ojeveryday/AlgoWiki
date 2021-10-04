@@ -144,7 +144,7 @@ class State(Enum):
     # 《算法导论》中的 BLACK 状态：已发现，邻接结点已经遍历完
     VISITED = 2
 
-class Solution:
+class Solution(object):
 
     def topSort(self, graph: List[DirectedGraphNode]) -> List[int]:
         numNodes = len(graph)
@@ -187,30 +187,141 @@ class Solution:
 
 ## 精选例题
 
-### 题型一：图中是否存在环 （课程表）
+### 题型一：课程表
+例题 1: 「力扣」 第 207 题：[课程表（Course Schedule）](https://leetcode-cn.com/problems/course-schedule/)
 
-### 题型二：有向无环图中的最长路径 （课程表）
+例题 2: 「力扣」 第 210 题：[课程表 II（Course Schedule II）](https://leetcode-cn.com/problems/course-schedule-ii/)
 
-### 题型三：最大/最小字典序拓扑排序
+> 现在你总共有 `numCourses` 门课需要选，记为 `0`到 `numCourses - 1`。给你一个数组 `prerequisites` ，其中 `prerequisites[i] = [a$_i$, b$_i$]` ，表示在选修课程 `a_i` 前**必须**先选修 `b_i` 。
+> 返回你为了学完所有课程所安排的学习顺序。可能会有多个正确的顺序，你只要返回**任意一种**就可以了。如果不可能完成所有课程，返回**一个空数组**。
+
+**分析**
+* 这两道题例题就是最经典的拓扑排序应用，我们直接套用上述模板即可。
+
+BFS 答案
+
+```python
+class Solution(object):
+
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        graph = self.buildGraph(numCourses, prerequisites)
+
+        inDegree = {i: 0 for i in range(numCourses)}
+
+        for prerequisite in prerequisites:
+            inDegree[prerequisite[0]] += 1
+
+        startNodeList = [i for i in range(numCourses) if inDegree[i] == 0]
+        queue = collections.deque(startNodeList)
+        visited = set(startNodeList)
+        topoOrder = []
+        count = numCourses
+        while queue:
+            node = queue.popleft()
+            topoOrder.append(node)
+            count -= 1
+
+            for child in graph[node]:
+                if child in visited:
+                    continue
+
+                inDegree[child] -= 1
+
+                if inDegree[child] == 0:
+                    queue.append(child)
+                    visited.add(child)
+
+        if count != 0:
+            return []
+
+        return topoOrder
+
+    def buildGraph(self, N: int, relations: List[List[int]]):
+        graph = {i: [] for i in range(N)}
+
+        for relation in relations:
+            graph[relation[1]].append(relation[0])
+
+        return graph
+```
+
+DFS 答案
+
+```python
+from enum import Enum
+
+class State(Enum):
+    UNVISITED = 0
+    VISITING = 1
+    VISITED = 2
+
+
+class Solution(object):
+
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        graph = self.buildGraph(numCourses, prerequisites)
+
+        states = {node: State.UNVISITED for node in graph}
+        res = []
+
+        for node in graph:
+            if (self.hasCycle(graph, node, states, res)):
+                return []
+
+        return res[::-1]
+
+    def buildGraph(self, N: int, relations: List[List[int]]) -> Dict[int, List[int]]:
+        graph = {i: [] for i in range(N)}
+
+        for relation in relations:
+            graph[relation[1]].append(relation[0])
+
+        return graph
+
+    def hasCycle(self, graph: Dict[int, List[int]], node: int, states: List[State], res: List[int]) -> bool:
+        if states[node] == State.VISITING:
+            return True
+
+        if states[node] == State.VISITED:
+            return False
+
+        states[node] = State.VISITING
+
+        for child in graph[node]:
+            if (self.hasCycle(graph, child, states, res)):
+                return True
+
+        res.append(node)
+        states[node] = State.VISITED
+
+        return False
+```
+
+**复杂度分析**：
+* 时间复杂度：$O(|V|+|E|)$，其中 $V$ 是所有字符的集合，$E$ 是所有字典序线索的集合。
+* 空间复杂度：$O(|V|+|E|)$
+
+### 题型二：最大/最小字典序拓扑排序
 
 例题 3: Lintcode 第892题，[外星人字典（ Alien Dictionary）](https://www.lintcode.com/problem/892/)
+
 > 有一种新的使用拉丁字母的外来语言。但是，你不知道字母之间的顺序。你会从词典中收到一个非空的单词列表，其中的单词在这种新语言的规则下按字典顺序排序。请推导出这种语言的字母顺序。
-> 假设所有字母都是小写。
-> 如果单词 a 是单词 b 的前缀且 b 出现在 a 之前，那么这个顺序是无效的。
-> 如果顺序是无效的，则返回空字符串。
-> 这里可能有多个有效的字母顺序，返回以正常字典顺序看来最小的。
+> * 假设所有字母都是小写。
+> * 如果单词 a 是单词 b 的前缀且 b 出现在 a 之前，那么这个顺序是无效的。
+> * 如果顺序是无效的，则返回空字符串。
+> * 这里可能有多个有效的字母顺序，返回以正常字典顺序看来最小的。
 
 **分析**：
-* 字典序可以看出一幅图，结点是所有出现过的拉丁字母，有向边 $(u, v)$ 代表在字典序当中字母 $u$ 排在字母 $v$ 前面。
+* 字典序可以看成一幅图，结点是所有出现过的拉丁字母，有向边 $(u, v)$ 代表在字典序当中字母 $u$ 排在字母 $v$ 前面。
 * 通过比较相邻的单词，可以得到关于该字典序的线索，将其作为边加入图。
 * 为了返回用正常英文字典顺序看来最小的结果，用 BFS 遍历的时候，需要保证每次出列的字符都是队列中最小的。
-
 
 以下是 BFS + 最小堆实现的代码。
 
 ```python
-class Solution:
-    def alienOrder(self, words):
+class Solution(object):
+
+    def alienOrder(self, words: List[str]):
         # 比较相邻单词构造图
         graph = self.buildGraph(words)
         if not graph:
@@ -223,7 +334,7 @@ class Solution:
 
         return ''.join(topoOrder)
 
-    def buildGraph(self, words):
+    def buildGraph(self, words: List[str]):
 
         graph = {char: [] for word in words for char in word}
 
@@ -241,7 +352,7 @@ class Solution:
 
         return graph
 
-    def topoSort_BFS_PriorityQueue(self, graph):
+    def topoSort_BFS_PriorityQueue(self, graph: Dict[str, List[str]]):
         inDegree = {char: 0 for char in graph}
 
         for char, neighbors in graph.items():
@@ -276,11 +387,22 @@ class Solution:
         return topoOrder
 ```
 
-**复杂度**：
-* 时间复杂度：$O(|V|+|E|)$，其中 $V$ 是所有字符的集合，$E$ 是所有字典序线索的集合。
-* 空间复杂度：$O(|V|+|E|)$
+**复杂度分析**：
 
+* 时间复杂度：$O(|V|+|E|)$，其中 $V$ 是所有字符的集合，$E$ 是所有字典序线索的集合。
+* 空间复杂度：$O(|V|+|E|)$。
 
 ## 精选练习
 
+| 题目                                                         | 类型                         |
+| ------------------------------------------------------------ | ---------------------------- |
+| [LC 1136. 平行课程](https://leetcode-cn.com/problems/parallel-courses/) | 中等，必做                   |
+| [LC 310. 最小高度树](https://leetcode-cn.com/problems/minimum-height-trees/) | 中等， 必做 |
+| [LC 329. 矩阵中的最长递增路径](https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix/) | 困难，必做 |
+| [CF 1385E. Directing Edges](https://codeforces.com/problemset/problem/1385/E) |  |
+
+
 # 参考
+* [Topological sorting @ Wikipedia](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)
+* https://oi-wiki.org/graph/topo/
+* 《算法导论》第 22 章
