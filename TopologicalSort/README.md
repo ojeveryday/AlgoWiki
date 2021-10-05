@@ -240,12 +240,16 @@ class Solution(object):
 ## 精选例题
 
 ### 题型一：课程表
+
 例题 1: 「力扣」 第 207 题：[课程表（Course Schedule）](https://leetcode-cn.com/problems/course-schedule/)
 
 例题 2: 「力扣」 第 210 题：[课程表 II（Course Schedule II）](https://leetcode-cn.com/problems/course-schedule-ii/)
 
-> 现在你总共有 `numCourses` 门课需要选，记为 `0`到 `numCourses - 1`。给你一个数组 `prerequisites` ，其中 `prerequisites[i] = [a$_i$, b$_i$]` ，表示在选修课程 `a_i` 前**必须**先选修 `b_i` 。
-> 返回你为了学完所有课程所安排的学习顺序。可能会有多个正确的顺序，你只要返回**任意一种**就可以了。如果不可能完成所有课程，返回**一个空数组**。
+> 现在你总共有 `numCourses` 门课需要选，记为 `0`到 `numCourses - 1`。
+> 给你一个数组 `prerequisites` ，其中 `prerequisites[i] = [a$_i$, b$_i$]` ，表示在选修课程 `a_i` 前**必须**先选修 `b_i` 。
+> * 返回你为了学完所有课程所安排的学习顺序。
+> * 可能会有多个正确的顺序，你只要返回**任意一种**就可以了。
+> * 如果不可能完成所有课程，返回**一个空数组**。
 
 **分析**
 * 这两道题例题就是最经典的拓扑排序应用，我们直接套用上述模板即可。
