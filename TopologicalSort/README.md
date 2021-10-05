@@ -12,9 +12,9 @@
 例子：如下图所示，我们定义了一幅有向无环图，
 
 ```python
-class DirectedGraphNode:
+class DirectedGraphNode(object):
   
-    def __init__(self, x):
+    def __init__(self, x: int):
         self.label = x
         self.neighbors = []
 
@@ -51,11 +51,11 @@ graph[3].neighbors = [graph[4], graph[5]]
 
 伪代码如下
 ```python
-topoSort ← 输出列表，初始为空
+topoOrder ← 输出列表，初始为空
 queue ← 包含所有入度为 0 结点的队列
 while ( queue 不为空 ) do
     n 出列 queue
-    将 n 放入 topoSort
+    将 n 放入 topoOrder
     for ( n 的所有邻接结点 m ) do
         删除该边，m 的入度减 1
         if ( m 入度为 0 ) then
@@ -65,7 +65,7 @@ if （图中存在边） then
     # 存在环，不可以拓扑排序
     return None
 else
-    return topoSort
+    return topoOrder
 ```
 
 之前说过拓扑排序结果并不唯一，按照字典序 （ lexicographical order ）可以将所有可能的输出结果进行排序。如果需要最大或者最小结果，可以将 Kahn 算法中的队列替换成最大堆/最小堆实现的优先队列即可，具体实现参考[精选例题X]。
