@@ -18,6 +18,7 @@ class DirectedGraphNode:
         self.label = x
         self.neighbors = []
 
+
 graph = [DirectedGraphNode(i) for i in range(0, 6)]
 graph[0].neighbors = [graph[1], graph[2], graph[3]]
 graph[1].neighbors = [graph[4]]
@@ -27,9 +28,7 @@ graph[3].neighbors = [graph[4], graph[5]]
 
 其拓扑排序可以是: `0->1->2->3->4->5`，也可以是 `0->3->2->5->1->4`。
 
-![BFS](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/BFS.png)
-
-![DFS](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/DFS.png)
+![TopoSort](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort.png)
 
 ## 拓扑排序的应用
 
@@ -52,21 +51,21 @@ graph[3].neighbors = [graph[4], graph[5]]
 
 伪代码如下
 ```python
-L ← 输出列表
-Q ← 包含所有入度为 0 结点的队列
-while ( Q 不为空 ) do
-    n 出列
-    将 n 放入 L
+topoSort ← 输出列表，初始为空
+queue ← 包含所有入度为 0 结点的队列
+while ( queue 不为空 ) do
+    n 出列 queue
+    将 n 放入 topoSort
     for ( n 的所有邻接结点 m ) do
         删除该边，m 的入度减 1
         if ( m 入度为 0 ) then
-            m 入列
+            m 入列 queue
 
 if （图中存在边） then
     # 存在环，不可以拓扑排序
     return None
 else
-    return L
+    return topoSort
 ```
 
 之前说过拓扑排序结果并不唯一，按照字典序 （ lexicographical order ）可以将所有可能的输出结果进行排序。如果需要最大或者最小结果，可以将 Kahn 算法中的队列替换成最大堆/最小堆实现的优先队列即可，具体实现参考[精选例题X]。
@@ -78,6 +77,7 @@ else
 #### 代码
 
 ```python
+from typing import *
 import collections
 
 class Solution(object):
@@ -117,24 +117,58 @@ class Solution(object):
             return []
         return topoOrder
 ```
+为了形象的理解 BFS 的过程，我们将代码的执行过程以及对应的队列 `queue` 和 `topoOrder` 的值都表示在下面的图中。
+
+![BFS](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort_BFS.png)
 
 ### 深度优先搜索（ Depth-first search， DFS）
 
 #### 思路
 
-一句话总结就是**拓扑排序就是图后序遍历的倒序输出**。我们现在将这句话展开来理解。根据《算法导论》第 22 章，我们可以在 DFS 的过程中给每个结点盖两个时间戳，分别是发现这个结点的时间 $d[u]$和遍历完该结点所有邻接结点的时间 $f[u]$，其中 $u \in V$ 。对于一个结点 $u$，DFS 算法遍历完其所有子结点之后才会判断其遍历结束，更新时间戳 $f[u]$。可以证明如果图中存在一条从 $u$ 指向 $v$ 的边，那么 $f[v] < f[u]$ 。所以，按照 $f[u]$ 的逆序输出结点就可以得到拓扑排序之后的序列。该算法有点类似回溯算法，我们需要在递归之前和递归之后更新每个结点的状态。每个结点有三种的可能的状态，分别是：
+一句话总结就是**拓扑排序就是图后序遍历的倒序输出**。我们现在将这句话展开来理解。根据《算法导论》第 22 章，我们可以在 DFS 的过程中给每个结点盖两个时间戳，分别是发现这个结点的时间 `discoverTime[u]` 和遍历完该结点所有邻接结点的时间 `finishTime[u]` ，其中 `u` 代表一个结点。对于结点 `u`，DFS 算法遍历完其所有子结点之后才会判断其遍历结束，更新时间戳 `finishTime[u]` 。可以证明如果图中存在一条从 `u` 指向 `v` 的边，那么 `finishTime[v] < f[u]` 。所以，按照 `finishTime[u]` 的逆序输出结点就可以得到拓扑排序之后的序列。该算法有点类似回溯算法，我们需要在递归之前和递归之后更新每个结点的状态。每个结点有三种的可能的状态，分别是：
 * `UNVISITED`：未被发现；
 * `VISITING`：已发现，但是邻接结点还未遍历完；
 * `VISITED`：已发现，邻接结点已经遍历完。
 
 所有结点的初始状态都是`UNVISITED`，在遍历某结点的所以邻接结点进入下一层递归之前要将该结点的状态设为 `VISITING`，所有邻接结点都遍历完递归返回之后将其状态更新为 `VISITED`。
 
-**时间复杂度**：在 DFS 过程中，每一个结点和每一条边都会被访问一次，将一个结点按照完成时间 $f[u]$的顺序放入输出数组需要 $O(1)$ 的时间，所以总的时间复杂度是 $O(|V|+|E|)$。
+沿用上面的例子，DFS 算法得到的拓扑排序序列和每个结点的发现／完成时间如下图所示。
+
+![DFS_A](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort_DFS_A.png)
+
+DFS 算法的伪代码如下：
+
+```python
+topoOrder ← 输出列表，初始为空
+while 存在状态为 UNVISITED 的结点 do
+    取状态为 UNVISITED 的结点 n
+    visit(n)
+
+function visit(node n)
+    if n 的状态为 VISITING then
+        stop   (not a DAG)
+
+    if n 的状态为 VISITED then
+        return
+
+    将 n 的状态标记为 VISITING
+
+    for n 的所有邻接结点 m do
+        visit(m)
+
+    将 n 的状态标记为 VISITED
+    将 n 加入 topoOrder 的首位
+```
+
+**时间复杂度**：在 DFS 过程中，每一个结点和每一条边都会被访问一次，将一个结点按照完成时间 `finishTime[u]` 的顺序放入输出数组需要 $O(1)$ 的时间，所以总的时间复杂度是 $O(|V|+|E|)$。
 
 **空间复杂度**：我们需要 `states` 数组或者字典来保存每个结点的状态，所以空间复杂度是 $O(|V|)$ 。
 
 ```python
+from typing import *
 from enum import Enum
+import collections
+
 # 遍历过程中结点的三种状态
 class State(Enum):
     # 《算法导论》中的 WHITE 状态：未被发现
@@ -144,7 +178,13 @@ class State(Enum):
     # 《算法导论》中的 BLACK 状态：已发现，邻接结点已经遍历完
     VISITED = 2
 
+
 class Solution(object):
+
+    def __init__(self):
+        self.time = 0
+        self.finishTime = collections.defaultdict(lambda: 0)
+        self.discoverTime = collections.defaultdict(lambda: 0)
 
     def topSort(self, graph: List[DirectedGraphNode]) -> List[int]:
         numNodes = len(graph)
@@ -172,6 +212,10 @@ class Solution(object):
         # VISITING 代表该结点已经被发现，但是其邻接结点还未遍历完
         states[node] = State.VISITING
         
+        # 更新发现时间
+        self.time += 1
+        self.discoverTime[node] = self.time
+
         # 递归处理子结点，将子结点加入 res 列表
         for child in node.neighbors:
             if (self.hasCycle(graph, child, states, res)):
@@ -182,8 +226,16 @@ class Solution(object):
         # 邻接结点已经遍历结束
         states[node] = State.VISITED
 
+        # 更新完成时间
+        self.time += 1
+        self.finishTime[node] = self.time
+
         return False
 ```
+
+为了形象的理解 DFS 的过程，我们将上述代码的执行过程以及每个结点的发现时间 `discoverTime` 和 完成时间 `finishTime` 的值都表示在下面的图中。我们用白色代表 `UNVISITED` ，灰色代表 `VISITING`，黑色代表 `VISITED`。
+
+![DFS_B](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort_DFS_B.png)
 
 ## 精选例题
 
@@ -201,6 +253,10 @@ class Solution(object):
 BFS 答案
 
 ```python
+from typing import *
+import collections
+
+
 class Solution(object):
 
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
@@ -248,7 +304,9 @@ class Solution(object):
 DFS 答案
 
 ```python
+from typing import *
 from enum import Enum
+
 
 class State(Enum):
     UNVISITED = 0
@@ -319,6 +377,9 @@ class Solution(object):
 以下是 BFS + 最小堆实现的代码。
 
 ```python
+from typing import *
+import heapq
+
 class Solution(object):
 
     def alienOrder(self, words: List[str]):
@@ -402,7 +463,8 @@ class Solution(object):
 | [CF 1385E. Directing Edges](https://codeforces.com/problemset/problem/1385/E) |  |
 
 
-# 参考
+## 参考
+
 * [Topological sorting @ Wikipedia](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)
 * https://oi-wiki.org/graph/topo/
 * 《算法导论》第 22 章
