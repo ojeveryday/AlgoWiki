@@ -1,31 +1,36 @@
 
 
 # 前缀和拓展
-## 拓展一：隐藏的「前缀和」
+## 拓展一：「前缀和」与「哈希表」
 
-例题 1.「力扣」的 [643. 子数组最大平均数 I](https://leetcode-cn.com/problems/maximum-average-subarray-i/) 。
+例题 1.「力扣」的 [560. 和为 K 的子数组](https://leetcode-cn.com/problems/subarray-sum-equals-k/)。
 
-> 给你一个由 `n` 个元素组成的整数数组 `nums` 和一个整数 `k` 。
->
-> 请你找出平均数最大且 长度为 `k` 的连续子数组，并输出该最大平均数。
->
-> 任何误差小于 $10^-5$ 的答案都将被视为正确答案。
->
->  
+> 给你一个整数数组 nums 和一个整数 k ，请你统计并返回该数组中和为 k 的连续子数组的个数。
 >
 > 示例 1：
 >
-> 输入：nums = [1,12,-5,-6,50,3], k = 4
-> 输出：12.75
-> 解释：最大平均数 (12-5-6+50)/4 = 51/4 = 12.75
+> 输入：nums = [1,1,1], k = 2
+> 输出：2
+>
+> 示例 2：
+>
+> 输入：nums = [1,2,3], k = 3
+> 输出：2
+>
+>
+> 提示：
+>
+> - 1 <= nums.length <= 2 * 10^4
+> - -1000 <= nums[i] <= 1000
+> - -10^7 <= k <= 10^7
 
-这个题目要求数组 `nums` 中所有长度为 `k` 的连续子数组中的最大的平均数。
+如果本题不使用「前缀和」，那么需要使用三重循环：两重循环用于遍历所有区间，一重循环用于区间求和。时间复杂度是 $O(N^3)$。
 
-可以用「**前缀和**」来解决，也可以用固定大小为 k 的「**滑动窗口**」来解决。
+其中，区间求和的循环可以用「前缀和」代替，把整体的时间复杂度降低为 $O(N^2)$。
 
-要求大小为 `k` 的窗口内的最大平均数，可以求 $[i, i + k]$ 区间的「最大和」再除以 k，即求 `(preSum[i + k] - preSum[i]) / k` 的最大值。
+还可以进一步优化：类似于「两数之和」的做法，我们可以用一个字典（哈希表）保存已经遇到过的 `preSum` 的出现次数，那么对于一个位置 $i$ ，可以在 $O(1)$ 的时间内，找到有多少个以 $i$ 结尾的子数组之和为 $k$。从而把时间复杂度降低为 $O(N)$。
 
-于是，「最大平均数」问题被转换成了「最大区间和」问题，然后使用「前缀和」解决。
+对于遍历刚开始的时候，下标 $0$ 之前没有元素，需要设置字典（哈希表）中前缀和 $0$ 的出现的次数为 $1$，即 `visited[0] = 1;` 以保证当 $[0, i]$ 的区间和为 $k$ 时，累计上该区间的次数为 1。
 
 <!-- tabs:start -->
 
@@ -33,18 +38,19 @@
 
 ```java
 class Solution {
-    public double findMaxAverage(int[] nums, int k) {
-        final int N = nums.length;
-        int[] preSum = new int[N + 1];
-        preSum[0] = 0;
-        for (int i = 0; i < N; ++i) {
-            preSum[i + 1] = preSum[i] + nums[i];
+    public int subarraySum(int[] nums, int k) {
+        int preSum = 0;
+        Map<Integer, Integer> visited = new HashMap<>();
+        visited.put(0, 1);
+        int res = 0;
+        for (int i = 0; i < nums.length; ++i) {
+            preSum += nums[i];
+            if (visited.containsKey(preSum - k)) {
+                res += visited.get(preSum - k);
+            }
+            visited.put(preSum, visited.getOrDefault(preSum, 0) + 1);
         }
-        int res = Integer.MIN_VALUE;
-        for (int i = 0; i <= N - k; ++i) {
-            res = Math.max(res, preSum[i + k] - preSum[i]);
-        }
-        return (double)res / k;
+        return res;
     }
 }
 ```
@@ -56,17 +62,19 @@ class Solution {
 ```c++
 class Solution {
 public:
-    double findMaxAverage(vector<int>& nums, int k) {
-        const int N = nums.size();
-        vector<int> preSum(N + 1);
-        for (int i = 0; i < N; ++i) {
-            preSum[i + 1] = preSum[i] + nums[i];
+    int subarraySum(vector<int>& nums, int k) {
+        int preSum = 0;
+        unordered_map<int, int> visited;
+        visited[0] = 1;
+        int res = 0;
+        for (int num : nums) {
+            preSum += num;
+            if (visited.count(preSum - k)) {
+                res += visited[preSum - k];
+            }
+            visited[preSum] ++;
         }
-        int res = INT_MIN;
-        for (int i = 0; i <= N - k; ++i) {
-            res = max(res, preSum[i + k] - preSum[i]);
-        }
-        return (double)res / k;
+        return res;
     }
 };
 ```
@@ -75,23 +83,18 @@ public:
 
 ```python
 class Solution(object):
-    def findMaxAverage(self, nums, k):
-        """
-        :type nums: List[int]
-        :type k: int
-        :rtype: float
-        """
-        N = len(nums)
-        preSum = range(N + 1)
-        for i in range(N):
-            preSum[i + 1] = preSum[i] + nums[i]
-        res = float("-inf")
-        for i in range(k - 1, N):
-            res = max(preSum[i + 1] - preSum[i + 1 - k], res)
-        return res / float(k)
+    def subarraySum(self, nums, k):
+        preSum = 0
+        visited = collections.defaultdict(int)
+        visited[0] = 1
+        res = 0
+        for num in nums:
+            preSum += num
+            if preSum - k in visited:
+                res += visited[preSum - k]
+            visited[preSum] += 1
+        return res
 ```
-
-
 
 <!-- tabs:end -->
 
