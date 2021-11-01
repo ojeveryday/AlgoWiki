@@ -262,6 +262,10 @@ class Solution(object):
 
 BFS 代码：
 
+<!-- tabs:start -->
+
+#### **Python3**
+
 ```python
 from typing import *
 import collections
@@ -312,11 +316,117 @@ class Solution(object):
 
         return graph
 ```
+#### **C++**
+```c++
+class Solution {
+ public:
+  vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<vector<int>> graph(numCourses);
+    vector<int> inDegree(numCourses, 0);
+
+    for (auto& prerequisite : prerequisites) {
+      const int in = prerequisite[0];
+      const int out = prerequisite[1];
+
+      graph[out].push_back(in);
+      inDegree[in]++;
+    }
+
+    vector<int> topoOrder;
+    set<int> visited;
+    queue<int> queue;
+
+    for (int i = 0; i < numCourses; i++) {
+      if (inDegree[i] == 0) {
+        queue.push(i);
+        visited.insert(i);
+      }
+    }
+
+    while (!queue.empty()) {
+      const int node = queue.front();
+      queue.pop();
+      topoOrder.push_back(node);
+
+      for (const int child : graph[node]) {
+        if (visited.find(child) != visited.end()) {
+          continue;
+        }
+
+        inDegree[child]--;
+        if (inDegree[child] == 0) {
+          queue.push(child);
+          visited.insert(child);
+        }
+      }
+    }
+
+    if (topoOrder.size() == numCourses) {
+      return topoOrder;
+    }
+    return vector<int>();
+  }
+};
+```
+
+#### **Java**
+
+```java
+class Solution {
+    public static int[] findOrder(int numCourses, int[][] prerequisites) {
+        List<Integer>[] graph = new List[numCourses];
+        int[] inDegree = new int[numCourses];
+
+        for (int i = 0; i < graph.length; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] prerequisite : prerequisites) {
+            final int out = prerequisite[1];
+            final int in = prerequisite[0];
+            graph[out].add(in);
+            inDegree[in]++;
+        }
+
+        List<Integer> topoOrder = new ArrayList<>();
+        HashSet<Integer> visited = new HashSet<Integer>();
+        Queue<Integer> queue = new LinkedList<Integer>();
+
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+                visited.add(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            final int node = queue.poll();
+            topoOrder.add(node);
+
+            for (final int child : graph[node]) {
+                if (visited.contains(child))
+                    continue;
+                inDegree[child]--;
+                if (inDegree[child] == 0) {
+                    queue.offer(child);
+                    visited.add(child);
+                }
+            }
+        }
+
+        if (topoOrder.size() == numCourses) {
+            return topoOrder.stream().mapToInt(i -> i).toArray();
+        }
+        return new int[] {};
+    }
+}
+```
+
+<!-- tabs:end -->
 
 DFS 代码：
 
 ```python
-from typing import *
 from enum import Enum
 
 # 结点的三种状态
