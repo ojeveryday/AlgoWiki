@@ -28,7 +28,7 @@ graph[3].neighbors = [graph[4], graph[5]]
 
 其拓扑排序可以是: `0->1->2->3->4->5`，也可以是 `0->3->2->5->1->4`。
 
-![TopoSort](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort.png)
+![TopoSort](TopoSort.png)
 
 ## 拓扑排序的应用
 
@@ -115,7 +115,7 @@ class Solution(object):
 
 为了形象的理解 BFS 的过程，我们将代码的执行过程以及对应的 `queue` 和 `topoOrder` 的值都表示在下图中。
 
-![BFS](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort_BFS.png)
+![BFS](TopoSort_BFS.png)
 
 ### 深度优先搜索（ Depth-first search， DFS）
 
@@ -130,7 +130,7 @@ class Solution(object):
 
 沿用上面的例子，DFS 算法得到的拓扑排序序列和每个结点的发现／完成时间如下图所示。
 
-![DFS_A](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort_DFS_A.png)
+![DFS_A](TopoSort_DFS_A.png)
 
 DFS 算法的伪代码如下：
 
@@ -239,7 +239,7 @@ class Solution(object):
 
 为了形象的理解 DFS 的过程，我们将上述代码的执行过程以及每个结点的发现时间 `discoverTime` 和 完成时间 `finishTime` 的值都表示在下面的图中。我们用白色代表 `UNVISITED` ，灰色代表 `VISITING`，黑色代表 `VISITED`。
 
-![DFS_B](/Users/billywu/Coding/AlgoWiki/AlgoWiki/TopologicalSort/TopoSort_DFS_B.png)
+![DFS_B](TopoSort_DFS_B.png)
 
 ## 精选例题
 
