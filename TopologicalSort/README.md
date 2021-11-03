@@ -426,6 +426,10 @@ class Solution {
 
 DFS 代码：
 
+<!-- tabs:start -->
+
+#### **Python**
+
 ```python
 from enum import Enum
 
@@ -480,6 +484,8 @@ class Solution(object):
         return False
 ```
 
+<!-- tabs:end -->
+
 **复杂度分析**：
 
 * 时间复杂度：$O(|V|+|E|)$，其中 $V$ 是所有课程的集合，$E$ 是所有先修课程要求的集合。
@@ -502,60 +508,32 @@ class Solution(object):
 
 以下是 BFS + 最小堆实现的代码。
 
+<!-- tabs:start -->
+
+#### **Python**
+
 ```python
 from typing import *
-import heapq
+import heapq 
 
 class Solution(object):
 
-    def alienOrder(self, words: List[str]):
-        # 比较相邻单词构造图
-        graph = self.buildGraph(words)
+    def alienOrder(self, words: List[str]) -> str:
+        graph, inDegree = self.buildGraph(words)
+
         if not graph:
             return ""
-
-        # 如果存在环, 则不存在有效的字典序
-        topoOrder = self.topoSort_BFS_PriorityQueue(graph)
-        if not topoOrder:
-            return ""
-
-        return ''.join(topoOrder)
-
-    def buildGraph(self, words: List[str]):
-        graph = {char: [] for word in words for char in word}
-
-        for i in range(1, len(words)):
-            w1 = words[i-1]
-            w2 = words[i]
-            for i in range(min(len(w1), len(w2))):
-                if w1[i] != w2[i]:
-                    graph[w1[i]].append(w2[i])
-                    break
-
-                #  如果 w2 是 w1 的前缀且 w1 出现在 w2 之前，则不存在有效的字典序
-                if i == min(len(w1), len(w2))-1 and len(w1) > len(w2):
-                    return None
-
-        return graph
-
-    def topoSort_BFS_PriorityQueue(self, graph: Dict[str, List[str]]):
-        # 计算入度
-        inDegree = {char: 0 for char in graph}
-        for char, neighbors in graph.items():
-            for neighbor in neighbors:
-                inDegree[neighbor] += 1
-
-        pq = [char for char in graph.keys() if inDegree[char] == 0]
-
-        # 最小堆实现的优先队列
-        heapq.heapify(pq)
-        visited = set(pq)
-        topoOrder = []
+				
+        # BFS
+        minheap = [char for char in graph if inDegree[char] == 0]
+        heapq.heapify(minheap)
+        visited = set(minheap)
+        topoOrder = ""
         count = len(inDegree)
 
-        while pq:
-            node = heapq.heappop(pq)
-            topoOrder.append(node)
+        while minheap:
+            node = heapq.heappop(minheap)
+            topoOrder += node
             count -= 1
 
             for child in graph[node]:
@@ -563,15 +541,229 @@ class Solution(object):
                     continue
                 inDegree[child] -= 1
                 if inDegree[child] == 0:
-                    heapq.heappush(pq, child)
+                    heapq.heappush(minheap, child)
                     visited.add(child)
 
-        # 存在环，不存在有效的字典序
         if count != 0:
-            return []
+            return ""
 
         return topoOrder
+
+    def buildGraph(self, words: List[str]) -> Tuple[Dict[str, Set[str]], Dict[str, int]]:
+        graph = {char: set() for word in words for char in word}
+        inDegree = {char: 0 for char in graph}
+
+        # Build graph
+        for i in range(1, len(words)):
+            w1 = words[i-1]
+            w2 = words[i]
+            for j in range(min(len(w1), len(w2))):
+                if w1[j] != w2[j]:
+                    graph[w1[j]].add(w2[j])
+                    break
+
+                # Check invalid input order: e.g., w1="abc", w2="ab"
+                if j == min(len(w1), len(w2)) - 1 and len(w1) > len(w2):
+                    graph.clear()
+                    inDegree.clear()
+                    return {}, {}
+
+        # Build inDegree
+        for char in graph:
+            for child in graph[char]:
+                inDegree[child] += 1
+
+        return graph, inDegree
 ```
+
+#### *Java*
+
+```java
+public class Solution {
+  public static String alienOrder(String[] words) {
+    Map<Character, Set<Character>> graph = new HashMap<>();
+    Map<Character, Integer> inDegree = new HashMap<>();
+    buildGraph(words, graph, inDegree);
+
+    if (graph.isEmpty())
+      return "";
+		
+    // BFS
+    StringBuilder topoOrder = new StringBuilder();
+    PriorityQueue<Character> minHeap = new PriorityQueue<>();
+    Set<Character> visited = new HashSet<>();
+
+    for (final char c : inDegree.keySet()) {
+      if (inDegree.get(c) == 0) {
+        minHeap.offer(c);
+        visited.add(c);
+      }
+    }
+
+    int count = inDegree.size();
+
+    while (!minHeap.isEmpty()) {
+      final char node = minHeap.poll();
+      topoOrder.append(node);
+      count--;
+      for (final char child : graph.get(node)) {
+        if (visited.contains(child))
+          continue;
+
+        inDegree.put(child, inDegree.get(child) - 1);
+
+        if (inDegree.get(child) == 0) {
+          minHeap.offer(child);
+          visited.add(child);
+        }
+      }
+    }
+
+    if (count != 0)
+      return "";
+
+    return topoOrder.toString();
+  }
+
+  private static void buildGraph(String[] words, Map<Character, Set<Character>> graph,
+      Map<Character, Integer> inDegree) {
+    // Initialize graph and InDegree
+    for (final String word : words) {
+      for (final char c : word.toCharArray()) {
+        graph.putIfAbsent(c, new HashSet<Character>());
+        inDegree.putIfAbsent(c, 0);
+      }
+    }
+
+    // Build graph
+    for (int i = 1; i < words.length; i++) {
+      final String w1 = words[i - 1];
+      final String w2 = words[i];
+      final int minLen = Math.min(w1.length(), w2.length());
+      for (int j = 0; j < minLen; j++) {
+        final char u = w1.charAt(j);
+        final char v = w2.charAt(j);
+        if (u != v) {
+          graph.get(u).add(v);
+          break;
+        }
+        
+        // Check invalid input order: e.g., w1="abc", w2="ab"
+        if (j == minLen - 1 && w1.length() > w2.length()) {
+          graph.clear();
+          inDegree.clear();
+          return;
+        }
+      }
+    }
+
+    // Build inDegree
+    for (final Map.Entry<Character, Set<Character>> entry : graph.entrySet()) {
+      final char c = entry.getKey();
+      final Set<Character> children = entry.getValue();
+      for (final char child : children) {
+        inDegree.put(child, inDegree.get(child) + 1);
+      }
+    }
+  }
+}
+```
+
+#### **C++**
+
+```c++
+class Solution {
+ public:
+  string alienOrder(vector<string>& words) {
+    unordered_map<char, unordered_set<char>> graph;
+    unordered_map<char, int> inDegree;
+    buildGraph(words, graph, inDegree);
+    
+    if (graph.empty()) return "";
+
+    // BFS
+    priority_queue<char, vector<char>, greater<char>> minHeap;
+    unordered_set<char> visited;
+    string topoOrder;
+
+    for (const auto& [c, count] : inDegree) {
+      if (count == 0) {
+        minHeap.push(c);
+        visited.insert(c);
+      }
+    }
+
+    int count = inDegree.size();
+
+    while (!minHeap.empty()) {
+      const auto node = minHeap.top();
+
+      minHeap.pop();
+      topoOrder += node;
+      count--;
+
+      for (const auto child : graph[node]) {
+        if (visited.find(child) != visited.end()) continue;
+        inDegree[child]--;
+        if (inDegree[child] == 0) {
+          minHeap.push(child);
+          visited.insert(child);
+        }
+      }
+    }
+
+    if (count != 0) return "";
+
+    return topoOrder;
+  }
+
+ private:
+  // Initialize graph and inDegree
+  void buildGraph(vector<string>& words,
+                  unordered_map<char, unordered_set<char>>& graph,
+                  unordered_map<char, int>& inDegree) {
+    
+    // Initialize graph and inDegree
+    for (const auto& word : words) {
+      for (const auto& c : word) {
+        graph[c] = unordered_set<char>();
+        inDegree[c] = 0;
+      }
+    }
+    
+    // Build graph
+    for (int i = 1; i < words.size(); i++) {
+      const auto w1 = words[i - 1];
+      const auto w2 = words[i];
+      const int minLen = min(w1.length(), w2.length());
+      for (int j = 0; j < minLen; j++) {
+        if (w1[j] != w2[j]) {
+          graph[w1[j]].insert(w2[j]);
+          break;
+        }
+
+        // Check invalid input order: e.g., w1="abc", w2="ab"
+        if (j == minLen - 1 && w1.length() > w2.length()) {
+          graph.clear();
+          inDegree.clear();
+          return;
+        }
+      }
+    }
+
+    // Build inDegree
+    for (const auto& [c, children] : graph) {
+      for (const auto& child : children) {
+        inDegree[child]++;
+      }
+    }
+
+    return;
+  }
+};
+```
+
+<!-- tabs:end -->
 
 **复杂度分析**：
 
