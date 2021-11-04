@@ -316,7 +316,9 @@ class Solution(object):
 
         return graph
 ```
+
 #### **C++**
+
 ```c++
 class Solution {
  public:
@@ -324,7 +326,7 @@ class Solution {
     vector<vector<int>> graph(numCourses);
     vector<int> inDegree(numCourses, 0);
 
-    for (auto& prerequisite : prerequisites) {
+    for (const auto& prerequisite : prerequisites) {
       const int in = prerequisite[0];
       const int out = prerequisite[1];
 
@@ -373,52 +375,52 @@ class Solution {
 
 ```java
 class Solution {
-    public static int[] findOrder(int numCourses, int[][] prerequisites) {
-        List<Integer>[] graph = new List[numCourses];
-        int[] inDegree = new int[numCourses];
+  public static int[] findOrder(int numCourses, int[][] prerequisites) {
+    Map<Integer, ArrayList<Integer>> graph = new HashMap<Integer, ArrayList<Integer>>();
+    int[] inDegree = new int[numCourses];
 
-        for (int i = 0; i < graph.length; i++) {
-            graph[i] = new ArrayList<>();
-        }
+    for (int i = 0; i < numCourses; i++)
+      graph.put(i, new ArrayList<Integer>());
 
-        for (int[] prerequisite : prerequisites) {
-            final int out = prerequisite[1];
-            final int in = prerequisite[0];
-            graph[out].add(in);
-            inDegree[in]++;
-        }
-
-        List<Integer> topoOrder = new ArrayList<>();
-        HashSet<Integer> visited = new HashSet<Integer>();
-        Queue<Integer> queue = new LinkedList<Integer>();
-
-        for (int i = 0; i < numCourses; i++) {
-            if (inDegree[i] == 0) {
-                queue.offer(i);
-                visited.add(i);
-            }
-        }
-
-        while (!queue.isEmpty()) {
-            final int node = queue.poll();
-            topoOrder.add(node);
-
-            for (final int child : graph[node]) {
-                if (visited.contains(child))
-                    continue;
-                inDegree[child]--;
-                if (inDegree[child] == 0) {
-                    queue.offer(child);
-                    visited.add(child);
-                }
-            }
-        }
-
-        if (topoOrder.size() == numCourses) {
-            return topoOrder.stream().mapToInt(i -> i).toArray();
-        }
-        return new int[] {};
+    for (final int[] prerequisite : prerequisites) {
+      final int out = prerequisite[1];
+      final int in = prerequisite[0];
+      graph.get(out).add(in);
+      inDegree[in]++;
     }
+
+    List<Integer> topoOrder = new ArrayList<>();
+    HashSet<Integer> visited = new HashSet<Integer>();
+    Queue<Integer> queue = new LinkedList<Integer>();
+
+    for (int i = 0; i < numCourses; i++) {
+      if (inDegree[i] == 0) {
+        queue.offer(i);
+        visited.add(i);
+      }
+    }
+
+    while (!queue.isEmpty()) {
+      final int node = queue.poll();
+      topoOrder.add(node);
+
+      for (final int child : graph.get(node)) {
+        if (visited.contains(child))
+          continue;
+        inDegree[child]--;
+        if (inDegree[child] == 0) {
+          queue.offer(child);
+          visited.add(child);
+        }
+      }
+    }
+
+    if (topoOrder.size() == numCourses) {
+      return topoOrder.stream().mapToInt(i -> i).toArray();
+    }
+
+    return new int[] {};
+  }
 }
 ```
 
@@ -482,6 +484,115 @@ class Solution(object):
         states[node] = State.VISITED
 
         return False
+```
+
+#### **C++**
+
+```c++
+enum State { UNVISITED, VISITING, VISITED };
+
+class Solution {
+ public:
+  vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<vector<int>> graph(numCourses);
+
+    // Build graph and inDegree
+    for (const auto& prerequisite : prerequisites) {
+      const int in = prerequisite[0];
+      const int out = prerequisite[1];
+
+      graph[out].push_back(in);
+    }
+
+    vector<State> states(numCourses);
+    vector<int> res;
+
+    // DFS
+    for (int node = 0; node < graph.size(); node++) {
+      if (hasCycle(graph, node, states, res)) {
+        return {};
+      }
+    }
+
+    reverse(res.begin(), res.end());
+    return res;
+  }
+
+ private:
+  bool hasCycle(const vector<vector<int>>& graph, const int node,
+                vector<State>& states, vector<int>& res) {
+    if (states[node] == VISITING) return true;
+    if (states[node] == VISITED) return false;
+
+    states[node] = VISITING;
+
+    for (const auto& child : graph[node]) {
+      if (hasCycle(graph, child, states, res)) return true;
+    }
+
+    res.push_back(node);
+    states[node] = VISITED;
+    return false;
+  }
+};
+```
+
+#### **Java**
+
+```java
+class Solution {
+  public enum States {
+    UNVISITED, VISITING, VISITED
+  }
+
+  public static int[] findOrder(int numCourses, int[][] prerequisites) {
+    Map<Integer, ArrayList<Integer>> graph = new HashMap<Integer, ArrayList<Integer>>();
+    States[] states = new States[numCourses];
+    ArrayList<Integer> res = new ArrayList<Integer>();
+
+    Arrays.fill(states, States.UNVISITED);
+
+    for (int i = 0; i < numCourses; i++)
+      graph.put(i, new ArrayList<Integer>());
+
+    for (final int[] prerequisite : prerequisites) {
+      final int in = prerequisite[0];
+      final int out = prerequisite[1];
+      graph.get(out).add(in);
+    }
+
+    for (int i = 0; i < numCourses; i++) {
+      if (hasCycle(graph, i, states, res)) {
+        return new int[] {};
+      }
+    }
+
+    Collections.reverse(res);
+    
+    return res.stream().mapToInt(i -> i).toArray();
+  }
+
+  private static boolean hasCycle(Map<Integer, ArrayList<Integer>> graph, int node, States[] states,
+      ArrayList<Integer> res) {
+    if (states[node] == States.VISITING)
+      return true;
+    if (states[node] == States.VISITED)
+      return false;
+
+    states[node] = States.VISITING;
+
+    for (final int child : graph.get(node)) {
+      if (hasCycle(graph, child, states, res)) {
+        return true;
+      }
+    }
+
+    res.add(node);
+    states[node] = States.VISITED;
+
+    return false;
+  }
+}
 ```
 
 <!-- tabs:end -->
@@ -576,99 +687,6 @@ class Solution(object):
         return graph, inDegree
 ```
 
-#### *Java*
-
-```java
-public class Solution {
-  public static String alienOrder(String[] words) {
-    Map<Character, Set<Character>> graph = new HashMap<>();
-    Map<Character, Integer> inDegree = new HashMap<>();
-    buildGraph(words, graph, inDegree);
-
-    if (graph.isEmpty())
-      return "";
-		
-    // BFS
-    StringBuilder topoOrder = new StringBuilder();
-    PriorityQueue<Character> minHeap = new PriorityQueue<>();
-    Set<Character> visited = new HashSet<>();
-
-    for (final char c : inDegree.keySet()) {
-      if (inDegree.get(c) == 0) {
-        minHeap.offer(c);
-        visited.add(c);
-      }
-    }
-
-    int count = inDegree.size();
-
-    while (!minHeap.isEmpty()) {
-      final char node = minHeap.poll();
-      topoOrder.append(node);
-      count--;
-      for (final char child : graph.get(node)) {
-        if (visited.contains(child))
-          continue;
-
-        inDegree.put(child, inDegree.get(child) - 1);
-
-        if (inDegree.get(child) == 0) {
-          minHeap.offer(child);
-          visited.add(child);
-        }
-      }
-    }
-
-    if (count != 0)
-      return "";
-
-    return topoOrder.toString();
-  }
-
-  private static void buildGraph(String[] words, Map<Character, Set<Character>> graph,
-      Map<Character, Integer> inDegree) {
-    // Initialize graph and InDegree
-    for (final String word : words) {
-      for (final char c : word.toCharArray()) {
-        graph.putIfAbsent(c, new HashSet<Character>());
-        inDegree.putIfAbsent(c, 0);
-      }
-    }
-
-    // Build graph
-    for (int i = 1; i < words.length; i++) {
-      final String w1 = words[i - 1];
-      final String w2 = words[i];
-      final int minLen = Math.min(w1.length(), w2.length());
-      for (int j = 0; j < minLen; j++) {
-        final char u = w1.charAt(j);
-        final char v = w2.charAt(j);
-        if (u != v) {
-          graph.get(u).add(v);
-          break;
-        }
-        
-        // Check invalid input order: e.g., w1="abc", w2="ab"
-        if (j == minLen - 1 && w1.length() > w2.length()) {
-          graph.clear();
-          inDegree.clear();
-          return;
-        }
-      }
-    }
-
-    // Build inDegree
-    for (final Map.Entry<Character, Set<Character>> entry : graph.entrySet()) {
-      final char c = entry.getKey();
-      final Set<Character> children = entry.getValue();
-      for (final char child : children) {
-        inDegree.put(child, inDegree.get(child) + 1);
-      }
-    }
-  }
-}
-```
-
 #### **C++**
 
 ```c++
@@ -761,6 +779,99 @@ class Solution {
     return;
   }
 };
+```
+
+#### **Java**
+
+```java
+public class Solution {
+  public static String alienOrder(String[] words) {
+    Map<Character, Set<Character>> graph = new HashMap<>();
+    Map<Character, Integer> inDegree = new HashMap<>();
+    buildGraph(words, graph, inDegree);
+
+    if (graph.isEmpty())
+      return "";
+		
+    // BFS
+    StringBuilder topoOrder = new StringBuilder();
+    PriorityQueue<Character> minHeap = new PriorityQueue<>();
+    Set<Character> visited = new HashSet<>();
+
+    for (final char c : inDegree.keySet()) {
+      if (inDegree.get(c) == 0) {
+        minHeap.offer(c);
+        visited.add(c);
+      }
+    }
+
+    int count = inDegree.size();
+
+    while (!minHeap.isEmpty()) {
+      final char node = minHeap.poll();
+      topoOrder.append(node);
+      count--;
+      for (final char child : graph.get(node)) {
+        if (visited.contains(child))
+          continue;
+
+        inDegree.put(child, inDegree.get(child) - 1);
+
+        if (inDegree.get(child) == 0) {
+          minHeap.offer(child);
+          visited.add(child);
+        }
+      }
+    }
+
+    if (count != 0)
+      return "";
+
+    return topoOrder.toString();
+  }
+
+  private static void buildGraph(String[] words, Map<Character, Set<Character>> graph,
+      Map<Character, Integer> inDegree) {
+    // Initialize graph and InDegree
+    for (final String word : words) {
+      for (final char c : word.toCharArray()) {
+        graph.putIfAbsent(c, new HashSet<Character>());
+        inDegree.putIfAbsent(c, 0);
+      }
+    }
+
+    // Build graph
+    for (int i = 1; i < words.length; i++) {
+      final String w1 = words[i - 1];
+      final String w2 = words[i];
+      final int minLen = Math.min(w1.length(), w2.length());
+      for (int j = 0; j < minLen; j++) {
+        final char u = w1.charAt(j);
+        final char v = w2.charAt(j);
+        if (u != v) {
+          graph.get(u).add(v);
+          break;
+        }
+        
+        // Check invalid input order: e.g., w1="abc", w2="ab"
+        if (j == minLen - 1 && w1.length() > w2.length()) {
+          graph.clear();
+          inDegree.clear();
+          return;
+        }
+      }
+    }
+
+    // Build inDegree
+    for (final Map.Entry<Character, Set<Character>> entry : graph.entrySet()) {
+      final char c = entry.getKey();
+      final Set<Character> children = entry.getValue();
+      for (final char child : children) {
+        inDegree.put(child, inDegree.get(child) + 1);
+      }
+    }
+  }
+}
 ```
 
 <!-- tabs:end -->
