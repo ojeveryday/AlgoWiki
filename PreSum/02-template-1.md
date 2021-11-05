@@ -161,4 +161,6 @@ class Solution(object):
 1. 数组 $[0, i]$ 区间的和 = `preSum[i]`;
 2. 数组 $[i, j]$ 区间的和 = `preSum[j] - preSum[i - 1]`;
 
+![](https://picture-bed-1251805293.cos.ap-beijing.myqcloud.com/202111050833861.png)
+
 至此，我们已经把如何求「前缀和」以及如何用「前缀和」求数组的区间和讲解清楚了。

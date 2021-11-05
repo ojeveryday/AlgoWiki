@@ -189,7 +189,7 @@ $S(A, D) = S(O, D) - S(O, E) - S(O, F) + S(O, G)$
 
 <!-- tabs:start -->
 
-Java
+#### **Java**
 
 ```java
 class NumMatrix {
@@ -214,7 +214,7 @@ class NumMatrix {
 }
 ```
 
-C++
+#### **C++**
 
 ```C++
 class NumMatrix {
@@ -240,7 +240,7 @@ public:
 };
 ```
 
-Python
+#### **Python**
 
 ```python
 class NumMatrix:
