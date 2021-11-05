@@ -881,15 +881,236 @@ public class Solution {
 * 时间复杂度：$O(|V|+|E|)$，其中 $V$ 是所有字符的集合，$E$ 是所有字典序线索的集合。
 * 空间复杂度：$O(|V|+|E|)$。
 
+### 题型三：最小高度树
+
+例题 4: 「力扣」 第 310 题：[最小高度树](https://leetcode.com/problems/minimum-height-trees/)
+
+> 给你一棵包含 `n` 个节点的树，标记为 `0` 到 `n-1` 。给定数字 `n` 和一个有 `n-1` 条无向边的 `edges` 列表，其中 `edges[i] = [ai, bi]` 表示树中节点 `ai` 和 `bi` 之间存在一条无向边。
+> 可选择树中任何一个节点作为根。当选择节点 `x` 作为根节点时，设结果树的高度为 `h` 。在所有可能的树中，具有最小高度的树（即 `min(h)` ）被称为最小高度树 。
+> 请你找到所有的 最小高度树 并按**任意顺序**返回它们的根节点标签列表。
+> 树的**高度**是指根节点和叶子节点之间最长向下路径上边的数量。
+>
+> * `1<= n <= 2 * 10^4`。
+> * 给定的输入保证是一棵树，不会有重复的边。
+
+**分析**：
+* 这道题也可以从每个节点出发用BFS得到以当前节点为根的树的高度，然后取对应高度最小的那些根节点。但是这样效率显然很低，有大量的重复计算。采用拓扑排序的方法，只需要一次遍历就可以得到最小高度树对应的根节点列表。
+* 首先，一个重要的结论是：这样的根节点最多只有 2 个。假设有 3 个及以上这样的根节点，根据提议，这些根节点也必须是相连的，那么就可以以靠中间的节点为根的树就会比以靠边节点为根的树高，从而可以反证得到最小高度树的根节点数量只能小于等于 2 。
+* 通过层级遍历的方法，我们可以从所有叶子节点出发，每次往上走一步，直到最后只省一个或者两个节点，那么这些节点就是我们要找的最小高度树的根节点。
+* 注意，这里给的 `edges` 对应的是无向图，所以 `[1, 2]` 实际代表了两条有向边，在构造邻接表的过程中要增加 `1->2` 和 `2->1` 两条边。与前几道题不同的是，这里的叶子节点判断条件是入度为 1 。
+* 针对一个例子（ `n=10`, `edges = {{0, 1}, {0, 2}, {0, 3}, {2, 4}, {0, 5}, {5, 6}, {6, 7}, {2, 8}, {7, 9}}` ），下图展示了从叶子节点每一步 BFS 层级遍历时队列 queue 里面存放的节点。白色的节点代表还没被遍历，黑色的节点已经被遍历。
+
+![Minimum_Height_Trees](Minimum_Height_Trees.png)
+
+以下是 BFS 实现的拓扑排序代码。
+
+<!-- tabs:start -->
+
+#### **Python**
+
+```python
+class Solution:
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+        if n <= 1:
+            return [i for i in range(n)]
+
+        res = []
+        # Build directed graph
+        graph = {i: [] for i in range(n)}
+        inDegree = {i: 0 for i in range(n)}
+        for edge in edges:
+            graph[edge[0]].append(edge[1])
+            inDegree[edge[1]] += 1
+            graph[edge[1]].append(edge[0])
+            inDegree[edge[0]] += 1
+        
+        # BFS
+        startNodes = [i for i in range(n) if inDegree[i] == 1]
+        queue = collections.deque(startNodes)
+        visited = set(startNodes)
+
+        count = n
+        while queue:
+            if count <= 2:
+                break
+            # Level-order traversal
+            size = len(queue)
+            for _ in range(size):
+                node = queue.popleft()
+                count -= 1
+
+                for child in graph[node]:
+                    if child in visited:
+                        continue
+
+                    inDegree[child] -= 1
+                    if inDegree[child] == 1:
+                        queue.append(child)
+                        visited.add(child)
+
+        # Convert queue to list
+        return list(queue)
+```
+
+#### **C++**
+
+```c++
+class Solution {
+ public:
+  /**
+   * @param n: n nodes labeled from 0 to n - 1
+   * @param edges: a undirected graph
+   * @return:  a list of all the MHTs root labels
+   */
+  vector<int> findMinHeightTrees(int n, vector<vector<int>> &edges) {
+    if (n == 1) return vector<int>(1, 0);
+    vector<int> res;
+
+    // Build graph and inDegree
+    vector<vector<int>> graph(n);
+    vector<int> inDegree(n);
+
+    for (const auto &edge : edges) {
+      const auto from = edge[0];
+      const auto to = edge[1];
+      graph[from].push_back(to);
+      inDegree[to]++;
+      graph[to].push_back(from);
+      inDegree[from]++;
+    }
+      
+    // BFS
+    queue<int> q;
+    unordered_set<int> visited;
+    for (int i = 0; i < n; i++) {
+      if (inDegree[i] == 1) {
+        q.push(i);
+        visited.insert(i);
+      }
+    }
+
+    int count = n;
+    while (!q.empty()) {
+      if (count <= 2) {
+        break;
+      }
+      // Level-order traversal
+      int size = q.size();
+      for (int i = 0; i < size; i++) {
+        int node = q.front();
+        q.pop();
+        count--;
+
+        for (const auto &child : graph[node]) {
+          if (visited.find(child) != visited.end()) continue;
+          inDegree[child]--;
+          if (inDegree[child] == 1) {
+            q.push(child);
+            visited.insert(child);
+          }
+        }
+      }
+    }
+
+    // Convert queue<int> to vector<int>
+    while (!q.empty()) {
+      res.emplace_back(move(q.front()));
+      q.pop();
+    }
+
+    return res;
+  }
+};
+```
+
+#### **Java**
+
+```java
+class Solution {
+  public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+    List<Integer> res = new ArrayList<>();
+    if (n == 1) {
+      res.add(0);
+      return res;
+    }
+    
+    // Build graph and inDegree
+    Map<Integer, ArrayList<Integer>> graph = new HashMap<>();
+    int[] inDegree = new int[n];
+
+    for (int i = 0; i < n; i++) {
+      graph.put(i, new ArrayList<Integer>());
+    }
+
+    for (final int[] edge : edges) {
+      final int n0 = edge[0];
+      final int n1 = edge[1];
+      graph.get(n0).add(n1);
+      inDegree[n1]++;
+      graph.get(n1).add(n0);
+      inDegree[n0]++;
+    }
+
+    // BFS
+    Queue<Integer> q = new LinkedList<Integer>();
+    Set<Integer> visited = new HashSet<Integer>();
+    int count = n;
+
+    for (int i = 0; i < n; i++) {
+      if (inDegree[i] == 1) {
+        q.offer(i);
+        visited.add(i);
+      }
+    }
+
+    while (!q.isEmpty()) {
+      if (count <= 2) {
+        break;
+      }
+      // Level-order traversal
+      final int size = q.size();
+      for (int i = 0; i < size; i++) {
+        final int node = q.poll();
+        count--;
+
+        for (final int child : graph.get(node)) {
+          if (visited.contains(child))
+            continue;
+          inDegree[child]--;
+          if (inDegree[child] == 1) {
+            q.offer(child);
+            visited.add(child);
+          }
+        }
+      }
+    }
+
+    // Convert Queue into List<Integer>
+    while (!q.isEmpty()) {
+      int node = q.poll();
+      res.add(node);
+    }
+
+    return res;
+  }
+}
+```
+
+<!-- tabs:end -->
+
+**复杂度分析**：
+
+* 时间复杂度：$O(n)$，`n` 为节点个数。
+* 空间复杂度：$O(n)$。
+
 ## 精选练习
 
 | 题目                                                         | 类型                         |
 | ------------------------------------------------------------ | ---------------------------- |
-| [LC 1136. 平行课程](https://leetcode-cn.com/problems/parallel-courses/) | 中等，必做                   |
-| [LC 310. 最小高度树](https://leetcode-cn.com/problems/minimum-height-trees/) | 中等， 必做 |
-| [LC 329. 矩阵中的最长递增路径](https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix/) | 困难，必做 |
-| [CF 1385E. Directing Edges](https://codeforces.com/problemset/problem/1385/E) |  |
-
+| [LeetCode 1136. 平行课程](https://leetcode-cn.com/problems/parallel-courses/) | 中等，必做                   |
+| [LeetCode 1462. 课程表 IV](https://leetcode.com/problems/course-schedule-iv/) | 中等， 必做 |
+| [LeetCode 329. 矩阵中的最长递增路径](https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix/) | 困难，必做 |
+| [LintCode 605. 序列重构](https://www.lintcode.com/problem/605/) | 中等， 必做|
 
 ## 参考
 
