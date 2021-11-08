@@ -20,4 +20,3 @@
   - [例题](PreSum/04-examples.md)
   - [拓展](PreSum/05-expandation.md)
   - [练习](PreSum/06-practices.md)
-

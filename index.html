@@ -9,12 +9,11 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
-    <link rel="stylesheet" href="//unpkg.com/gitalk/dist/gitalk.css">
     <!--  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">-->
     <!--  <link rel="stylesheet" href="//unpkg.com/docsify/themes/buble.css">-->
     <!-- Theme: Simple (latest v0.x.x) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
-
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
 </head>
 <body>
 <div id="app"></div>
@@ -22,22 +21,19 @@
     window.$docsify = {
         name: '目录',
         repo: 'https://github.com/ojeveryday/AlgoWiki',
-        loadSidebar: true,//侧边栏,_sidebar.md
-        auto2top: true,//切换页面后是否自动跳转到页面顶部
-        coverpage: true,//封面,_coverpage.md
-      	// markdown 的流程图支持
-        markdown: {
-            renderer: {
-                code: function (code, lang) {
-                    if (lang === "mermaid") {
-                        return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + id++, code) + "</div>"
-                        );
-                    }
-                    return this.origin.code.apply(this, arguments);
-                }
-            }
-        }
+        loadSidebar: true,// 侧边栏
+        maxLevel: 2,
+        subMaxLevel: 2,// 最大支持渲染的标题层级
+        auto2top: true,// 切换页面后是否自动跳转到页面顶部
+        coverpage: true, //封面
+        themeColor: '#2478e3',// 主题颜色
+        // 上下章节
+        pagination: {
+            previousText: '上一章节',
+            nextText: '下一章节',
+            crossChapter: true,
+            crossChapterText: true
+        },
     }
 </script>
 <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
@@ -56,5 +52,39 @@
 <!-- 代码块选项卡 https://jhildenbiddle.github.io/docsify-tabs/#/ -->
 <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 <script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+<!-- 上下章节 -->
+<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+<!-- 评论 -->
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+<!-- 注册参考链接 http://note.youdao.com/publicshare/?id=6ea132ba501b49b2928125a694cc9ad9#/  -->
+<script>
+        const gitalk = new Gitalk({
+            // 这里填写注册好的clientID
+            clientID: 'f3cd4fb7ce024790e397',
+            // 这里填写注册好的clientSecret
+            clientSecret: '9fc7377613d3b07f178ca64672e00f25ad5df421',
+            // 项目名
+            repo: 'AlgoWiki',
+            // 项目组织
+            owner: 'ojeveryday',
+            // 可以创建 issues 的管理员
+            admin: ['ojeveryday','fuxuemingzhu'],
+            // issues 中的名字
+            title: location.hash.match(/#(.*?)([?]|$)/)[1],
+            // issues 中的 id
+            id: location.hash.match(/#(.*?)([?]|$)/)[1],
+            // facebook-like distraction free mode
+            distractionFreeMode: false
+        })
+</script>
+<script>
+    window.onhashchange = function(event) {
+        if(event.newURL.split('?')[0] !== event.oldURL.split('?')[0]) {
+            location.reload()
+        }
+    }
+</script>
 </body>
 </html>
