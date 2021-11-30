@@ -1343,6 +1343,55 @@ function calculateSum(piles, speed) {
     return sum
 }
 ```
+#### **Go**
+
+```go
+func minEatingSpeed(piles []int, h int) int {
+	maxVal := 1
+	n := len(piles)
+	for i := 0; i < n; i++ {
+		maxVal = max(maxVal, piles[i])
+	}
+	// 速度最小的时候，耗时最长
+	left := 1
+	// 速度最大的时候，耗时最短
+	right := maxVal
+	for left < right {
+		mid := left + (right-left)/2
+		if check(piles, mid) > h {
+			// 耗时太多，说明速度太慢了，下一轮搜索区间在
+			// [mid + 1, right]
+			left = mid + 1
+		} else {
+			right = mid
+		}
+	}
+	return left
+}
+
+//check
+/* @Description:如果返回的小时数严格大于 H，就不符合题意
+ * @param piles
+ * @param speed
+ * @return int 需要的小时数
+ */
+func check(piles []int, speed int) int {
+	sum := 0
+	for i := 0; i < len(piles); i++ {
+		// 上取整可以这样写
+		sum += (piles[i] + speed - 1) / speed
+	}
+	return sum
+}
+
+// 获取两者中较大的数
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
 
 <!-- tabs:end -->
 
