@@ -190,7 +190,35 @@ var search = function(nums, target) {
   return -1
 };
 ```
+#### **Go**
 
+```go
+func search(nums []int, target int) int {
+	//特殊拥立判断
+	n:=len(nums)
+	if n==0{
+		return 0
+	}
+	// 在 [left, right] 区间里查找 target
+	left:=0
+	right:=n-1
+	for left<=right{
+		// 为了防止 left + right 整形溢出，写成如下形式
+		mid:=left+(right-left)/2
+		if nums[mid]==target{
+			return mid
+		}else if nums[mid]<target{
+			// 下一轮搜索区间：[left, mid - 1]
+			left=mid+1
+		}else {
+			// 此时：nums[mid] < target
+			// 下一轮搜索区间：[mid + 1, right]
+			right=mid-1
+		}
+	}
+	return -1
+}
+```
 <!-- tabs:end -->
 
 注意事项：
@@ -292,6 +320,25 @@ function search (nums, left, right, target) {
 }
 ```
 
+#### **Go**
+
+```go
+func search(nums []int, left, right, target int) {
+	for left < right {
+		// 选择中位数时下取整
+		mid := left + (right-left)/2
+		if check(mid) {
+			// 下一轮搜索区间是 [mid + 1, right]
+			left = mid + 1
+		} else {
+			// 下一轮搜索区间是 [left, mid]
+			right = mid
+		}
+	}
+	// 退出循环的时候，程序只剩下一个元素没有看到。
+	// 视情况，是否需要单独判断 left（或者 right）这个下标的元素是否符合题意
+}
+```
 <!-- tabs:end -->
 
 版本 2：
@@ -375,6 +422,25 @@ function search (nums, left, right, target) {
 }
 ```
 
+#### **Go**
+
+```go
+func search(nums []int, left, right, target int) {
+	for left < right {
+		// 选择中位数时上取整
+		mid := left + (right-left+1)/2
+		if check(mid) {
+			// 下一轮搜索区间是 [left, mid - 1]
+			right = mid - 1
+		} else {
+			// 下一轮搜索区间是 [mid, right]
+			left = mid
+		}
+	}
+	// 退出循环的时候，程序只剩下一个元素没有看到。
+	// 视情况，是否需要单独判断 left（或者 right）这个下标的元素是否符合题意
+}
+```
 <!-- tabs:end -->
 
 理解模板代码的要点：
@@ -510,6 +576,31 @@ function search (nums, left, right, target) {
 }
 ```
 
+#### **Go**
+
+```go
+func search(nums []int, left, right, target int) int {
+	for left+1 < right {
+		// 选择中位数时下取整
+		mid := left + (right-left)/2
+		if nums[mid] == target {
+			return mid
+		} else if nums[mid] < target {
+			left = mid
+		} else {
+			right = mid
+		}
+	}
+	//单独判断 left（或者 right）这个下标的元素是否符合题意
+	if nums[left] == target {
+		return left
+	}
+	if nums[right] == target {
+		return right
+	}
+	return -1
+}
+```
 <!-- tabs:end -->
 
  
@@ -664,6 +755,33 @@ var searchInsert = function(nums, target) {
 
 ```
 
+#### **Go**
+
+```go
+func searchInsert(nums []int, target int) int {
+	n := len(nums)
+	if n == 0 {
+		return 0
+	}
+	// 特判
+	if nums[n-1] < target {
+		return n
+	}
+	left := 0
+	right := n - 1
+	for left < right {
+		mid := left + (right-left)/2
+		// 严格小于 target 的元素一定不是解
+		if nums[mid] < target {
+			// 下一轮搜索区间是 [mid + 1, right]
+			left = mid + 1
+		} else {
+			right = mid
+		}
+	}
+	return left
+}
+```
 <!-- tabs:end -->
 
 <!-- tabs:start -->
@@ -783,6 +901,30 @@ var searchInsert = function(nums, target) {
 
 ```
 
+#### **Go**
+
+```Go
+func searchInsert(nums []int, target int) int {
+	n := len(nums)
+	if n == 0 {
+		return 0
+	}
+	left := 0
+	// 因为有可能数组的最后一个元素的位置的下一个是我们要找的，故右边界是 len
+	right := n
+	for left < right {
+		mid := left + (right-left)/2
+		// 严格小于 target 的元素一定不是解
+		if nums[mid] < target {
+			// 下一轮搜索区间是 [mid + 1, right]
+			left = mid + 1
+		} else {
+			right = mid
+		}
+	}
+	return left
+}
+```
 <!-- tabs:end -->
 
 **复杂度分析**：
@@ -934,6 +1076,32 @@ var mySqrt = function(x) {
 };
 ```
 
+#### **Go**
+
+```go
+func mySqrt(x int) int {
+	if x == 0 {
+		return 0
+	}
+	if x == 1 {
+		return 1
+	}
+	left := 1
+	right := x / 2
+	for left < right {
+		mid := left + (right-left+1)/2
+		// 不使用 mid * mid > x，防止 overflow
+		if mid > x/mid {
+			// 下一轮搜索的区间是 [left, mid - 1]
+			right = mid - 1
+		} else {
+			// 下一轮搜索的区间是 [mid, right]
+			left = mid
+		}
+	}
+	return right
+}
+```
 <!-- tabs:end -->
 
 注意：这里看到分支的设置为 `left = mid;` 一定要在 `int mid = left + (right - left) / 2;` 的括号里加 `1`，得：`int mid = left + (right - left + 1) / 2;`。
@@ -1173,6 +1341,55 @@ function calculateSum(piles, speed) {
         sum += Math.ceil(pile / speed)
     })
     return sum
+}
+```
+#### **Go**
+
+```go
+func minEatingSpeed(piles []int, h int) int {
+	maxVal := 1
+	n := len(piles)
+	for i := 0; i < n; i++ {
+		maxVal = max(maxVal, piles[i])
+	}
+	// 速度最小的时候，耗时最长
+	left := 1
+	// 速度最大的时候，耗时最短
+	right := maxVal
+	for left < right {
+		mid := left + (right-left)/2
+		if check(piles, mid) > h {
+			// 耗时太多，说明速度太慢了，下一轮搜索区间在
+			// [mid + 1, right]
+			left = mid + 1
+		} else {
+			right = mid
+		}
+	}
+	return left
+}
+
+//check
+/* @Description:如果返回的小时数严格大于 H，就不符合题意
+ * @param piles
+ * @param speed
+ * @return int 需要的小时数
+ */
+func check(piles []int, speed int) int {
+	sum := 0
+	for i := 0; i < len(piles); i++ {
+		// 上取整可以这样写
+		sum += (piles[i] + speed - 1) / speed
+	}
+	return sum
+}
+
+// 获取两者中较大的数
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 ```
 
