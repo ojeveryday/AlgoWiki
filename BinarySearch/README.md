@@ -1076,6 +1076,32 @@ var mySqrt = function(x) {
 };
 ```
 
+#### **Go**
+
+```go
+func mySqrt(x int) int {
+	if x == 0 {
+		return 0
+	}
+	if x == 1 {
+		return 1
+	}
+	left := 1
+	right := x / 2
+	for left < right {
+		mid := left + (right-left+1)/2
+		// 不使用 mid * mid > x，防止 overflow
+		if mid > x/mid {
+			// 下一轮搜索的区间是 [left, mid - 1]
+			right = mid - 1
+		} else {
+			// 下一轮搜索的区间是 [mid, right]
+			left = mid
+		}
+	}
+	return right
+}
+```
 <!-- tabs:end -->
 
 注意：这里看到分支的设置为 `left = mid;` 一定要在 `int mid = left + (right - left) / 2;` 的括号里加 `1`，得：`int mid = left + (right - left + 1) / 2;`。
