@@ -118,7 +118,7 @@ docsify serve .
 | UnionFind          | 已认领 |          |
 | SegmentTree | 已认领 |          |
 | Array |  | |
-| TopologicalSort |  | |
+| TopologicalSort | 已认领，wu2meng3 | |
 | Trie |  | |
 | BinaryIndexedTree |  | |
 | BinarySearchTree |  | |
