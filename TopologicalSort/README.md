@@ -2,14 +2,16 @@
 
 作者：wu2meng3
 
-拓扑排序是一个有向无环图（ directed acyclic graph ，简称 DAG ）所有结点的线性序列，满足以下两个条件：
+对一个有向无环图（ Directed Acyclic Graph ，简称 DAG ）进行拓扑排序，是指将图中所有结点排成一个线性序列，并满足以下两个条件：
 
 1. 每个结点只出现一次。
 2. 若存在一条从结点 A 指向结点 B 的路径，则在序列当中 A 出现在 B 之前。
 
 若一幅图存在环路，则无法进行拓扑排序。另外，对于一幅图，其拓扑排序结果并不唯一。我们采用《算法导论》第 22 章的规范来定义图：$G=(V,E)$，其中 $V$ 是代表结点的集合，$E$ 代表边的集合，$|V|$ 和 $|E|$ 分别代表结点和边的个数。$(u,v) \in E$ 代表存在一个从结点 $u$ 指向结点 $v$ 的有向边。因为我们本章中主要研究稀疏图 ( sparse graph )，所以我们采用邻接表（ adjacency list ）的方式来表示图，其空间开销是 $O(|V|+|E|)$。
 
-例子：如下图所示，我们定义了一幅有向无环图，
+例子：下图中，我们定义了一幅有向无环图，
+
+![TopoSort_DAG](TopoSort_DAG.png)
 
 ```python
 class DirectedGraphNode(object):
@@ -26,9 +28,9 @@ graph[2].neighbors = [graph[4], graph[5]]
 graph[3].neighbors = [graph[4], graph[5]]
 ```
 
-其拓扑排序可以是: `0->1->2->3->4->5`，也可以是 `0->3->2->5->1->4`。
+如图所示，其拓扑排序的结果可以是: (a) `0->1->2->3->4->5` 或者 (b) `0->3->2->5->1->4`。
 
-![TopoSort](TopoSort.png)
+![TopoSort_not_unique](TopoSort_not_unique.png)
 
 ## 拓扑排序的应用
 
@@ -45,6 +47,10 @@ graph[3].neighbors = [graph[4], graph[5]]
 #### 思路
 
 该算法也叫 [Kahn 算法](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)。首先，我们需要介绍**入度**（ indegree ）的概念。在有向图当中，一个结点的入度表示有多少条边指向它。对应的还有一个概念叫**出度** （ outdegree ），代表从一个结点出发有多少条边，但是在拓扑排序当中我们只会用到入度。入度为 0 的点的集合将作为 BFS 的起点。如果没有入度为 0 的点，则无法进行拓扑排序。BFS 由先进先出 （First In, First Out, FIFO）的队列 （ queue ）数据结构来实现。BFS 算法实现拓扑排序的伪代码如下：
+
+BFS 算法理解起来非常直观，我们先拿出不被任何结点指向的节点（入度为 0 ）的结点，然后把它从图中删去（同时更新余下所有结点的入度）并加入到输出序列。我们用一个队列 `queue` 来维护当前图中所有结点，用 `topoOrder` 保存输出序列。具体执行过程以及对应的 `queue` 和 `topoOrder` 的值都展示在下图中。
+
+![BFS](TopoSort_BFS.png)
 
 ```python
 topoOrder ← 输出列表，初始为空
@@ -113,11 +119,9 @@ class Solution(object):
 
 * 空间复杂度：我们需要一个数组或者字典来存储每个结点的入度，还需要一个队列来存储入度为 0 的结点，总的空间复杂度为 $O(|V|)$ 。
 
-为了形象的理解 BFS 的过程，我们将代码的执行过程以及对应的 `queue` 和 `topoOrder` 的值都表示在下图中。
-
-![BFS](TopoSort_BFS.png)
-
 ### 深度优先搜索（ Depth-first search， DFS）
+
+对于拓扑排序而言，读者需要熟练掌握 BFS 解法，因为其更常见，且思路相对自然。 DFS 解法可以作为补充，了解即可。
 
 #### 思路
 
