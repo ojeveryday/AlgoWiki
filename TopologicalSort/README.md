@@ -48,7 +48,7 @@ graph[3].neighbors = [graph[4], graph[5]]
 
 该算法也叫 [Kahn 算法](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)。首先，我们需要介绍**入度**（ indegree ）的概念。在有向图当中，一个结点的入度表示有多少条边指向它。对应的还有一个概念叫**出度** （ outdegree ），代表从一个结点出发有多少条边，但是在拓扑排序当中我们只会用到入度。入度为 0 的点的集合将作为 BFS 的起点。如果没有入度为 0 的点，则无法进行拓扑排序。BFS 由先进先出 （First In, First Out, FIFO）的队列 （ queue ）数据结构来实现。
 
-BFS 算法理解起来非常直观，我们先拿出不被任何结点指向的结点（入度为 0 ）的结点，然后把它从图中删去（同时更新余下所有结点的入度）并加入到输出序列。我们用一个队列 `queue` 来维护当前图中所有入度为 0 的结点，用 `topoOrder` 保存输出序列。具体执行过程以及对应的 `queue` 和 `topoOrder` 的值都展示在下图中。
+BFS 算法理解起来非常直观，我们先拿出不被任何结点指向（入度为 0 ）的结点，然后把它从图中删去（同时更新余下所有结点的入度）并加入到输出序列。我们用一个队列 `queue` 来维护当前图中所有入度为 0 的结点，用 `topoOrder` 保存输出序列。具体执行过程以及对应的 `queue` 和 `topoOrder` 的值都展示在下图中。
 
 ![BFS](TopoSort_BFS.png)
 
